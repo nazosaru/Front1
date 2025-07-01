@@ -285,7 +285,21 @@ const DEV_CREDENTIALS = {
   password: 'devpass123'
 };
 
+const DEV_ADMIN_CREDENTIALS = {
+  username: 'admin',
+  password: 'admin123'
+};
+
 const handleRegisterOrLogin = async (params) => {
+  // 开发模式下管理员快捷登录
+  if (isDevMode && 
+      params.username === DEV_ADMIN_CREDENTIALS.username && 
+      params.password === DEV_ADMIN_CREDENTIALS.password) {
+    localStorage.setItem('isAdmin', 'true');
+    saveUsername(params.username);
+    router.push('/userManagement');
+    return;
+  }
   // 开发模式本地验证
   if (isDevMode && opType.value === 1) {
     if (params.username === DEV_CREDENTIALS.username && 

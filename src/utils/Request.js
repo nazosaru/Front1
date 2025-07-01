@@ -10,8 +10,8 @@ let loading = null;
 
 // 创建 Axios 实例
 const instance = axios.create({
-  baseURL: '/api',  // 确保与后端的 baseURL 一致
-  timeout: 10 * 1000,
+  baseURL: 'http://127.0.0.1:8000',  // 指向后端服务
+  timeout: 10 * 10000,
 });
 
 // 请求前拦截器

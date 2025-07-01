@@ -9,6 +9,8 @@ import userManagement from '../views/AdminOperations/UserManagement.vue'
 import systemManagement from '../views/AdminOperations/SystemManagement.vue'
 import profile from "../views/Profile.vue"
 
+const isDevMode = import.meta.env.MODE === 'development';
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -45,12 +47,26 @@ const router = createRouter({
     {
       path:'/userManagement',
       name:'userManagement',
-      component:userManagement
+      component:userManagement,
+      beforeEnter: (to, from, next) => {
+        if (isDevMode || localStorage.getItem('isAdmin') === 'true') {
+          next();
+        } else {
+          next('/');
+        }
+      }
     },   
-     {
+    {
       path:'/systemManagement',
       name:'systemManagement',
-      component:systemManagement
+      component:systemManagement,
+      beforeEnter: (to, from, next) => {
+        if (isDevMode || localStorage.getItem('isAdmin') === 'true') {
+          next();
+        } else {
+          next('/');
+        }
+      }
     },
     {
       path:"/profile",

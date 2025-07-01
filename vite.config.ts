@@ -18,7 +18,7 @@ export default defineConfig({
     proxy: {
       // 将所有以 /api 开头的请求转发到后端服务器
       '/api': {
-        target: 'http://127.0.0.1:8000',  // 替换为你的后端服务地址，例如 http://10.203.241.187:8000
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,  // 允许代理跨域
         rewrite: (path) => path.replace(/^\/api/, '')  // 重写路径，将 /api 去掉
       }
