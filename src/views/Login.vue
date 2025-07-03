@@ -138,11 +138,21 @@
 <script setup>
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import md5 from "js-md5";
 import BackgroundAnimation from "../components/BackgroundAnimation.vue";
 import { useUserStore } from "../stores/userStore";
 import { saveUsername } from "../utils/Auth";
 import { API_ENDPOINTS } from "../config/apiConfig";
+
+// 前端固定盐值
+const FRONTEND_SALT = 'RetrievalSystem@2023';
+
+// SHA-256加密函数
+async function sha256WithSalt(message) {
+  const msgBuffer = new TextEncoder().encode(message + FRONTEND_SALT);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -270,9 +280,36 @@ const DEV_CREDENTIALS = {
 };
 
 const DEV_ADMIN_CREDENTIALS = {
-  username: 'admin',
+  username: 'admin', 
   password: 'admin123'
 };
+
+// 密码加密测试函数
+const testPasswordEncryption = async () => {
+  const testPassword = 'test@123';
+  console.log('--- 密码加密测试 ---');
+  console.log('原始密码:', testPassword);
+  
+  try {
+    const encrypted1 = await sha256WithSalt(testPassword);
+    const encrypted2 = await sha256WithSalt(testPassword);
+    
+    console.log('加密结果1:', encrypted1);
+    console.log('加密结果2:', encrypted2);
+    console.log('结果长度:', encrypted1.length);
+    console.log('一致性验证:', encrypted1 === encrypted2 ? '通过' : '失败');
+    
+    proxy.$message.success('加密测试完成，请查看控制台输出');
+  } catch (error) {
+    console.error('加密测试失败:', error);
+    proxy.$message.error('加密测试失败');
+  }
+};
+
+// 开发模式下自动运行测试
+if (isDevMode) {
+  testPasswordEncryption();
+}
 
 const handleRegisterOrLogin = async (params) => {
   // 开发模式下管理员快捷登录
@@ -284,16 +321,31 @@ const handleRegisterOrLogin = async (params) => {
     router.push('/userManagement');
     return;
   }
-  // 开发模式本地验证
-  if (isDevMode && opType.value === 1) {
-    if (params.username === DEV_CREDENTIALS.username && 
-        params.password === DEV_CREDENTIALS.password) {
-      localStorage.setItem("jwtToken", "dev_token");
-      userStore.setUsername(params.username);
-      saveUsername(params.username);
-      router.push('/framework');
-      return;
+  
+  try {
+    // 加密密码
+    if (params.password) {
+      params.password = await sha256WithSalt(params.password);
     }
+    if (params.registerPassword) {
+      params.registerPassword = await sha256WithSalt(params.registerPassword);
+    }
+    
+    // 开发模式本地验证
+    if (isDevMode && opType.value === 1) {
+      if (params.username === DEV_CREDENTIALS.username && 
+          params.password === await sha256WithSalt(DEV_CREDENTIALS.password)) {
+        localStorage.setItem("jwtToken", "dev_token");
+        userStore.setUsername(params.username);
+        saveUsername(params.username);
+        router.push('/framework');
+        return;
+      }
+    }
+  } catch (error) {
+    console.error('Password encryption failed:', error);
+    proxy.$message.error('Password encryption failed');
+    return;
   }
 
   let url = null;
@@ -388,10 +440,12 @@ const handleRememberLogin = (params) => {
 const handleResetPassword = async (params) => {
   const url = api.resetPwd;
   const formData2 = new FormData();
-  formData2.append("username", params.username);
-  formData2.append("password", params.registerPassword);
-
+  
   try {
+    const encryptedPassword = await sha256WithSalt(params.registerPassword);
+    formData2.append("username", params.username);
+    formData2.append("password", encryptedPassword);
+
     const response = await fetch(url, {
       method: "POST",
       body: formData2,
@@ -406,7 +460,8 @@ const handleResetPassword = async (params) => {
       alert("Username is incorrect");
     }
   } catch (error) {
-    console.error("Request failed", error);
+    console.error("Password encryption or request failed", error);
+    proxy.$message.error('Password reset failed');
   }
 };
 </script>
