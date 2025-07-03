@@ -124,6 +124,17 @@ import { useUserStore } from "../stores/userStore";
 import { saveUsername } from "../utils/Auth";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
+// 前端固定盐值
+const FRONTEND_SALT = 'RetrievalSystem@2023';
+
+// SHA-256加密函数
+async function sha256WithSalt(message) {
+  const msgBuffer = new TextEncoder().encode(message + FRONTEND_SALT);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 const { proxy } = getCurrentInstance();
 const router = useRouter();
 const route = useRoute();
@@ -263,16 +274,30 @@ const handleRegisterOrLogin = async (params) => {
     router.push('/userManagement');
     return;
   }
-  // 开发模式本地验证
-  if (isDevMode && opType.value === 1) {
-    if (params.username === DEV_CREDENTIALS.username &&
-      params.password === DEV_CREDENTIALS.password) {
-      localStorage.setItem("jwtToken", "dev_token");
-      userStore.setUsername(params.username);
-      saveUsername(params.username);
-      router.push('/framework');
-      return;
+  try {
+    // 加密密码
+    if (params.password) {
+      params.password = await sha256WithSalt(params.password);
     }
+    if (params.registerPassword) {
+      params.registerPassword = await sha256WithSalt(params.registerPassword);
+    }
+
+    // 开发模式本地验证
+    if (isDevMode && opType.value === 1) {
+      if (params.username === DEV_CREDENTIALS.username &&
+        params.password === await sha256WithSalt(DEV_CREDENTIALS.password)) {
+        localStorage.setItem("jwtToken", "dev_token");
+        userStore.setUsername(params.username);
+        saveUsername(params.username);
+        router.push('/framework');
+        return;
+      }
+    }
+  } catch (error) {
+    console.error('Password encryption failed:', error);
+    proxy.$message.error('Password encryption failed');
+    return;
   }
 
   let url = null;
@@ -421,12 +446,17 @@ const startCountdown = () => {
 const handleResetPassword = async (params) => {
   const url = api.resetConfirm;
   const formData2 = new FormData();
-  formData2.append("username", params.username);
-  formData2.append("code", params.verifyCode);
-  formData2.append("new_password", params.registerPassword);
-  formData2.append("confirm_password", params.reRegisterPassword);
 
   try {
+    // 加密密码
+    const encryptedPassword = await sha256WithSalt(params.registerPassword);
+    const encryptedConfirmPassword = await sha256WithSalt(params.reRegisterPassword);
+
+    formData2.append("username", params.username);
+    formData2.append("code", params.verifyCode);
+    formData2.append("new_password", encryptedPassword);
+    formData2.append("confirm_password", encryptedConfirmPassword);
+
     const response = await fetch(url, {
       method: "POST",
       body: formData2,
@@ -441,9 +471,11 @@ const handleResetPassword = async (params) => {
       alert("Failed: " + result.message);
     }
   } catch (error) {
-    console.error("Request failed", error);
+    console.error("Password encryption or request failed", error);
+    proxy.$message.error('Password reset failed');
   }
 };
+
 
 </script>
 
