@@ -10,8 +10,8 @@
         @submit.prevent
       >
         <div class="login-title">
-          <i class="fa-solid fa-kiwi-bird fa-lg" style="color: #cf8b2a"></i>
-          Retrieval System
+          <img src="@/assets/favicon.svg" alt="My Icon" class="login-icon" />
+          LoveIT -- Retrieval System
         </div>
 
         <!-- 用户名 -->
@@ -61,22 +61,6 @@
 
         <!-- 注册或忘记密码 -->
         <div v-if="opType == 0 || opType == 2">
-          <!-- 昵称 -->
-          <el-form-item prop="nickname" v-if="opType == 0" class="form-item">
-            <el-input
-              size="large"
-              clearable
-              placeholder="Please enter your nickname"
-              v-model="formData.nickname"
-              maxlength="20"
-              class="custom-input"
-            >
-              <template #prefix>
-                <span class="iconfont icon-account"></span>
-              </template>
-            </el-input>
-          </el-form-item>
-
           <!-- 输入密码 -->
           <el-form-item prop="registerPassword" class="form-item">
             <el-input
@@ -362,23 +346,26 @@ const handleRegisterOrLogin = async (params) => {
 const handleSuccessResponse = (response, params) => {
   if (response.code === 0) {
     if (opType.value === 0) {
+      console.log("✅ 注册成功，用户名：", params.username);
       alert("Register successfully");
       opType.value = 1;
       resetForm();
     } else {
+      console.log("✅ 登录成功，用户名：", params.username);
       // 存储 JWT 令牌
       localStorage.setItem("jwtToken", response.access_token);
       alert("Operation successful");
-      if (response.data.permission_level === 1) {
-        router.push("/framework");
-      } else if (response.data.permission_level === 0) {
-        router.push("/userManagement");
-      }
+      // if (response.data.permission_level === 1) {
+      //   router.push("/framework");
+      // } else if (response.data.permission_level === 0) {
+      //   router.push("/userManagement");
+      // }
 
       emitUsername();
       saveUsername(params.username);
     }
   } else {
+    console.log("登录失败，原因：", response.message);
     alert("Operation failed: " + response.message);
   }
 };
@@ -460,8 +447,11 @@ const handleResetPassword = async (params) => {
   margin-bottom: 40px;
 }
 
-.login-title i {
-  margin-right: 10px;
+.login-icon {
+  width: 48px;         // 放大图标
+  height: 48px;
+  margin-right: 12px;  // 图标与文字之间的距离
+  transform: translateX(-8px);  // 向左偏移图标
 }
 
 .rememberme-panel {

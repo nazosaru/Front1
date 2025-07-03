@@ -10,7 +10,7 @@ let loading = null;
 
 // 创建 Axios 实例
 const instance = axios.create({
-  baseURL: 'http://127.0.0.1:8000',  // 指向后端服务
+  baseURL: 'http://192.168.202.239:8000',  // 指向后端服务
   timeout: 10 * 10000,
 });
 

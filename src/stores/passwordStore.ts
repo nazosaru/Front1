@@ -9,7 +9,7 @@ export const usePasswordStore = defineStore('password', () => {
   // 设置用户名的函数
   const setPassword = (newPassword: string) => {
     password.value = newPassword;
-    console.log('设置的用户名:', newPassword); // 调试输出
+    // console.log('设置的用户名:', newPassword); // 调试输出
   };
 
   return { password, setPassword };

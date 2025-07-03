@@ -11,137 +11,11 @@ const showMatrixRight = ref(false);
 const showLoading = ref(false);
 const loadingText = ref("Loading...");
 
-// 定义显示的文本
-const textLeft = 'text = "xiaoming"';
-const textRight = 'image = "xiaoming.jpg"';
-
-// 定义显示的矩阵 LaTeX 字符串
-const matrixLatexLeft =
-  "\\begin{matrix}\\boldsymbol{t}_{00} & \\boldsymbol{t}_{01} & \\cdots & \\boldsymbol{t}_{0d}\\\\\\boldsymbol{t}_{10} & \\boldsymbol{t}_{11} & \\cdots & \\boldsymbol{t}_{1d}\\\\\\vdots & \\vdots & \\ddots & \\vdots\\\\\\boldsymbol{t}_{m0} & \\boldsymbol{t}_{m1} & \\cdots & \\boldsymbol{t}_{md}\\end{matrix}";
-const matrixLatexRight =
-  "\\begin{matrix}\\boldsymbol{i}_{00} & \\boldsymbol{i}_{01} & \\cdots & \\boldsymbol{i}_{0d}\\\\\\boldsymbol{i}_{10} & \\boldsymbol{i}_{11} & \\cdots & \\boldsymbol{i}_{1d}\\\\\\vdots & \\vdots & \\ddots & \\vdots\\\\\\boldsymbol{i}_{n0} & \\boldsymbol{i}_{n1} & \\cdots & \\boldsymbol{i}_{nd}\\end{matrix}";
-
-// 用于存储渲染后的矩阵 HTML
-const matrixLeftHtml = ref("");
-const matrixRightHtml = ref("");
-
 // 用于控制最终显示内容
 const finalImageLeft = ref(false);
 const finalTextRight = ref(false);
 const showTitle = ref(false); // 新增：用于控制标题和副标题的显示
 
-// 打字机效果函数
-const typeText = (text, typedText, onComplete) => {
-  let index = 0;
-  const interval = setInterval(() => {
-    if (index < text.length) {
-      typedText.value += text[index];
-      index++;
-    } else {
-      clearInterval(interval);
-      if (onComplete) onComplete();
-    }
-  }, 50);
-};
-
-// 渲染 MathJax 数学公式
-const renderMathJax = () => {
-  if (window.MathJax) {
-    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
-  }
-};
-
-// 淡出文本并显示矩阵
-const fadeOut = (showRef, showMatrixRef, matrixLatex, matrixHtmlRef) => {
-  showRef.value = false;
-  nextTick(() => {
-    setTimeout(() => {
-      showMatrixRef.value = true;
-      matrixHtmlRef.value = `\\[ ${matrixLatex} \\]`;
-      nextTick(() => {
-        renderMathJax();
-        setTimeout(() => {
-          // 判断并应用对应的动画效果
-          if (showMatrixRef === showMatrixLeft) {
-            document
-              .querySelector(".matrix-container.left")
-              .classList.add("move-to-center-left");
-          } else {
-            document
-              .querySelector(".matrix-container.right")
-              .classList.add("move-to-center-right");
-          }
-          setTimeout(() => {
-            showLoading.value = true;
-            updateLoadingText();
-          }, 1000);
-        }, 1000);
-      });
-    }, 1000);
-  });
-};
-
-// 更新加载文本的内容
-const updateLoadingText = () => {
-  setTimeout(() => {
-    loadingText.value = "Preassign attention...";
-  }, 1000);
-  setTimeout(() => {
-    loadingText.value = "Identify irrelevant fragments...";
-  }, 2000);
-  setTimeout(() => {
-    loadingText.value = "Reassign attention...";
-  }, 3000);
-  setTimeout(() => {
-    loadingText.value = "Calculate similarity...";
-  }, 4000);
-  setTimeout(() => {
-    loadingText.value = "Done!";
-  }, 5000);
-  setTimeout(() => {
-    showLoading.value = false;
-    setTimeout(() => {
-      document
-        .querySelector(".matrix-container.left")
-        .classList.add("move-to-right");
-      document
-        .querySelector(".matrix-container.right")
-        .classList.add("move-to-left");
-      fadeOutMatrixAndShowFinal();
-    }, 1000);
-  }, 6000);
-};
-
-// 新增函数：矩阵淡出后显示最终内容
-const fadeOutMatrixAndShowFinal = () => {
-  setTimeout(() => {
-    showMatrixLeft.value = false;
-    showMatrixRight.value = false;
-    setTimeout(() => {
-      finalImageLeft.value = true;
-      finalTextRight.value = true;
-      setTimeout(() => {
-        showTitle.value = true; // 显示标题和副标题
-      }, 1000);
-    }, 1000); // 矩阵淡出后再等1秒显示最终内容
-  }, 1000); // 等待1秒再淡出矩阵
-};
-
-// 组件挂载时，加载 MathJax 并初始化打字机效果
-onMounted(() => {
-  const script = document.createElement("script");
-  script.src =
-    "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML";
-  script.onload = () => {
-    typeText(textLeft, typedTextLeft, () => {
-      fadeOut(showLeft, showMatrixLeft, matrixLatexLeft, matrixLeftHtml);
-    });
-    typeText(textRight, typedTextRight, () => {
-      fadeOut(showRight, showMatrixRight, matrixLatexRight, matrixRightHtml);
-    });
-  };
-  document.head.appendChild(script);
-});
 </script>
 
 <template>
@@ -149,13 +23,11 @@ onMounted(() => {
     <transition name="fade">
       <div v-if="showLeft" class="typing-container left">
         <div class="typed-text">{{ typedTextLeft }}</div>
-        <div class="cursor"></div>
       </div>
     </transition>
     <transition name="fade">
       <div v-if="showRight" class="typing-container right">
         <div class="typed-text">{{ typedTextRight }}</div>
-        <div class="cursor"></div>
       </div>
     </transition>
 
