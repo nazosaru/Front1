@@ -1,12 +1,13 @@
 // src/config/apiConfig.js
-export const API_BASE_URL = "http://192.168.202.239:8000";/* nginx自动解析 */
+export const API_BASE_URL = "http://192.168.10.246:8000";/* nginx自动解析 */
 
 export const API_ENDPOINTS = {
 
 /* -----已实现---------------------------------------------------------------- */
   login: `${API_BASE_URL}/user/login`, /* 用户登录 */ 
   register: `${API_BASE_URL}/user/register`, /* 用户注册 */
-  resetPwd: `${API_BASE_URL}/user/reset_password`, /* 用户重置密码 */
+  sendCode: `${API_BASE_URL}/user/reset_password/send_code`, /* 发送验证码 */
+  resetConfirm: `${API_BASE_URL}/user/reset_password/confirm`, /* 确认验证码并重置密码 */
   edit: `${API_BASE_URL}/user/edit`, /* 用户信息编辑 */
   feedback: `${API_BASE_URL}/user/feedback`, /* 提交反馈与建议 */
   delete: `${API_BASE_URL}/user/delete`, /* 账户注销 */
