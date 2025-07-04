@@ -2,6 +2,7 @@ import axios from 'axios';
 import { ElLoading } from 'element-plus';
 import router from '@/router';
 import Message from '../utils/Message';
+import { SERVER_URL } from '@/config/serverConfig.ts';
 
 const contentTypeForm = 'application/x-www-form-urlencoded;charset=UTF-8';
 const responseTypeJson = 'json';
@@ -10,7 +11,7 @@ let loading = null;
 
 // 创建 Axios 实例
 const instance = axios.create({
-  baseURL: '192.168.10.246:8000',  // 指向后端服务
+  baseURL: SERVER_URL,  // 指向后端服务
   timeout: 10 * 10000,
 });
 

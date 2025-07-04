@@ -263,32 +263,6 @@ const DEV_ADMIN_CREDENTIALS = {
   password: 'admin123'
 };
 
-// 密码加密测试函数
-const testPasswordEncryption = async () => {
-  const testPassword = 'test@123';
-  console.log('--- 密码加密测试 ---');
-  console.log('原始密码:', testPassword);
-  
-  try {
-    const encrypted1 = await sha256WithSalt(testPassword);
-    const encrypted2 = await sha256WithSalt(testPassword);
-    
-    console.log('加密结果1:', encrypted1);
-    console.log('加密结果2:', encrypted2);
-    console.log('结果长度:', encrypted1.length);
-    console.log('一致性验证:', encrypted1 === encrypted2 ? '通过' : '失败');
-    
-    proxy.$message.success('加密测试完成，请查看控制台输出');
-  } catch (error) {
-    console.error('加密测试失败:', error);
-    proxy.$message.error('加密测试失败');
-  }
-};
-
-// 开发模式下自动运行测试
-if (isDevMode) {
-  testPasswordEncryption();
-}
 
 const handleRegisterOrLogin = async (params) => {
   // 开发模式下管理员快捷登录
@@ -385,11 +359,11 @@ const handleSuccessResponse = (response, params) => {
       // 存储 JWT 令牌
       localStorage.setItem("jwtToken", response.access_token);
       alert("Operation successful");
-      // if (response.data.permission_level === 1) {
-      //   router.push("/framework");
-      // } else if (response.data.permission_level === 0) {
-      //   router.push("/userManagement");
-      // }
+      if (response.data.permission_level === 1) {
+        router.push("/framework");
+      } else if (response.data.permission_level === 0) {
+        router.push("/userManagement");
+      }
 
       emitUsername();
       saveUsername(params.username);
