@@ -65,7 +65,7 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import { API_ENDPOINTS } from "../../config/apiConfig";
 
-import Starfield from "@/components/Starfield.vue";
+import Starfield from "@/components/Snowfall.vue";
 import Dashboard from "@/components/DashboardAdmin.vue";
 import { getUsername } from "@/utils/Auth";
 

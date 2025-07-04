@@ -3,11 +3,11 @@ import login from '../views/Login.vue'
 import framework from '../views/Framework.vue'
 import textSearch from '../views/TextSearch.vue'
 import imageSearch from '../views/ImageSearch.vue'
-import dialogue from '../views/dialogue.vue'
 import others from '../views/Others.vue'
 import userManagement from '../views/AdminOperations/UserManagement.vue'
 import systemManagement from '../views/AdminOperations/SystemManagement.vue'
 import profile from "../views/Profile.vue"
+import history from "../views/History.vue" // 1. 导入新的History组件
 
 const isDevMode = import.meta.env.MODE === 'development';
 
@@ -28,17 +28,13 @@ const router = createRouter({
       path:'/textSearch',
       name:'textSearch',
       component:textSearch
-    },   
-     {
+    },
+    {
       path:'/imageSearch',
       name:'imageSearch',
       component:imageSearch
     },
-    {
-      path:'/dialogue',
-      name:'dialogue',
-      component:dialogue
-    },
+    // 2. 已删除dialogue路由
     {
       path:'/others',
       name:'others',
@@ -55,7 +51,7 @@ const router = createRouter({
           next('/');
         }
       }
-    },   
+    },
     {
       path:'/systemManagement',
       name:'systemManagement',
@@ -72,6 +68,12 @@ const router = createRouter({
       path:"/profile",
       name:"profile",
       component:profile
+    },
+    // 3. 添加新的history路由
+    {
+      path:"/history",
+      name:"history",
+      component:history
     }
   ]
 })

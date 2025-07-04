@@ -91,7 +91,7 @@ import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios"; // 引入axios用于发送请求
 
-import Starfield from "@/components/Starfield.vue";
+import Starfield from "@/components/Snowfall.vue";
 import { getUsername } from "@/utils/Auth";
 import { API_ENDPOINTS } from "../../config/apiConfig";
 import Dashboard from "@/components/DashboardAdmin.vue";

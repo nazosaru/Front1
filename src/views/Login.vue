@@ -1,5 +1,6 @@
 <template>
   <div class="body">
+    <div class="background-image"></div>
     <BackgroundAnimation />
     <div class="login-panel">
       <el-form class="login-register" :model="formData" :rules="rules" ref="formDataRef" @submit.prevent>
@@ -506,7 +507,7 @@ const handleResetPassword = async (params) => {
   border: 1px solid #333;
   border-radius: 10px;
   background-color: #2b2e3e;
-  color: #ffffff;
+  color: #191919;
 }
 
 .login-title {
@@ -514,6 +515,7 @@ const handleResetPassword = async (params) => {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 40px;
+  color: #000000;
 }
 
 .login-icon {
@@ -582,6 +584,20 @@ const handleResetPassword = async (params) => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+/* 背景图片样式 */
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('@/assets/background2.svg'); /* 替换为您的图片路径 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1; /* 确保在内容下方 */
+  opacity: 0.7; /* 适当透明度，确保文字可读 */
 }
 
 img {
