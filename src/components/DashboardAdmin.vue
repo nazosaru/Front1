@@ -4,8 +4,8 @@
       <nav class="main-menu">
         <div>
           <div class="user-info">
-            <img src="../assets/avatar/lz.png" alt="user" />
-            <p>Zheng Li</p>
+            <img src="../assets/avatar/admin.png" alt="user" />
+            <p>{{ username }}</p>
           </div>
           <ul>
             <li
@@ -26,7 +26,7 @@
             >
               <a href="#">
                 <i class="fa fa-arrow-trend-up nav-icon"></i>
-                <span class="nav-text">System</span>
+                <span class="nav-text">Word Cloud</span>
               </a>
             </li>
           </ul>
@@ -53,10 +53,20 @@
 
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { ref, computed } from "vue";
+import { getUsername } from "@/utils/Auth";
+import { ref, onMounted } from "vue"; 
 
 const router = useRouter();
 const route = useRoute();
+const username = ref("Admin");
+
+// 页面加载时从本地存储获取用户名
+onMounted(() => {
+  const name = getUsername(); // 从本地存储获取用户名
+  if (name) {
+    username.value = name; // 赋值给响应式变量
+  }
+});
 
 // 判断当前路由是否激活
 const isActive = (path) => {
@@ -122,7 +132,7 @@ body {
 /* 主菜单样式 */
 main {
   display: grid;
-  grid-template-columns: 11% 89%; /* 主菜单和内容区宽度比例 */
+  grid-template-columns: 15% 85%; /* 主菜单和内容区宽度比例 */
   width: 100%;
   height: 100vh; /* 高度填满视口 */
   margin: 0px;
@@ -167,14 +177,16 @@ main {
 
 .nav-item a {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center;         /* 垂直居中 */
+  justify-content: flex-start; /* 左对齐 */
   color: #fff;
   font-size: 1rem;
-  padding: 12px 0;
+  padding: 16px 20px;
   margin: 0 8px;
   border-radius: 5px;
+  height: 56px;                /* 加一个统一高度（可调整） */
 }
+
 
 .nav-item.active a {
   background: rgba(106, 109, 155, 0.5); /* 激活菜单项背景色 */
@@ -182,17 +194,24 @@ main {
 }
 
 .nav-icon {
-  width: 40px;
+  font-size: 1.2rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
   height: 20px;
-  font-size: 1.1rem; /* 图标大小 */
+  margin-right: 8px;  /* 与文字间距 */
 }
 
 .nav-text {
-  display: block;
-  width: 70px;
-  height: 20px;
-  letter-spacing: 0;
+  white-space: nowrap;        /* 👈 禁止换行 */
+  overflow: hidden;           /* 👈 超出部分隐藏 */
+  text-overflow: ellipsis;    /* 👈 超出显示省略号（可选） */
+  display: inline-block;      /* 👈 保证在一行显示 */
+  margin-left: 8px;           /* 👈 可微调图标和文字间距 */
 }
+
 
 /* 内容区样式 */
 .content {
