@@ -25,30 +25,18 @@
                   </div>
                 </div>
                 <div class="question-list">
-                  <button
-                    class="question-button"
-                    @click="sendMessageIndex(0 + 4 * questionSelection)"
-                  >
+                  <button class="question-button" @click="sendMessageIndex(0 + 4 * questionSelection)">
                     {{ question[0 + 4 * questionSelection] }}
                   </button>
-                  <button
-                    class="question-button"
-                    @click="sendMessageIndex(1 + 4 * questionSelection)"
-                  >
+                  <button class="question-button" @click="sendMessageIndex(1 + 4 * questionSelection)">
                     {{ question[1 + 4 * questionSelection] }}
                   </button>
                 </div>
                 <div class="question-list">
-                  <button
-                    class="question-button"
-                    @click="sendMessageIndex(2 + 4 * questionSelection)"
-                  >
+                  <button class="question-button" @click="sendMessageIndex(2 + 4 * questionSelection)">
                     {{ question[2 + 4 * questionSelection] }}
                   </button>
-                  <button
-                    class="question-button"
-                    @click="sendMessageIndex(3 + 4 * questionSelection)"
-                  >
+                  <button class="question-button" @click="sendMessageIndex(3 + 4 * questionSelection)">
                     {{ question[3 + 4 * questionSelection] }}
                   </button>
                 </div>
@@ -57,34 +45,21 @@
 
             <!-- Search Interface -->
             <div v-if="messages.length" class="chat-history" ref="chatHistory">
-              <div
-                v-for="(message, index) in messages"
-                :key="index"
-                class="message"
-              >
+              <div v-for="(message, index) in messages" :key="index" class="message">
                 <div class="message-header">
                   <span class="message-time">{{ message.time }}</span>
                 </div>
                 <div class="message-content">
                   <p>{{ message.text }}</p>
                   <div class="image-container">
-                    <img
-                      v-for="(imageUrl, index) in message.imageurls"
-                      :key="index"
-                      :src="imageUrl"
-                      alt="image"
-                      class="response-image"
-                      @click="enlargeImage(imageUrl)"
-                    />
+                    <img v-for="(imageUrl, index) in message.imageurls" :key="index" :src="imageUrl" alt="image"
+                      class="response-image" @click="enlargeImage(imageUrl)" />
                   </div>
                   <div v-if="message.loading" class="loading-icon">
                     <i class="fa-solid fa-spinner fa-spin"></i>
                   </div>
                 </div>
-                <div
-                  v-if="message.isResponse && !message.fromHistory"
-                  class="response"
-                >
+                <div v-if="message.isResponse && !message.fromHistory" class="response">
                   <button @click="retryResponse">Retry</button>
                   <button @click="downloadAllImages">Get</button>
                 </div>
@@ -93,29 +68,9 @@
 
             <!-- Input Box -->
             <div class="input-area">
-              <input
-                type="text"
-                v-model="userInput"
-                placeholder="Please enter text..."
-                @keyup.enter="sendMessage"
-              />
+              <input type="text" v-model="userInput" placeholder="Please enter text..." @keyup.enter="sendMessage" />
               <button @click="sendMessage">➤</button>
             </div>
-          </div>
-
-          <!-- History Records Section -->
-          <div class="history-section">
-            <h4>History Records</h4>
-            <ul class="history-list">
-              <li
-                v-for="(item, index) in history"
-                :key="item.id"
-                @click="fetchHistory(item.id)"
-              >
-                <span>{{ item.text }}</span>
-                <button @click.stop="removeHistory(index)">✖</button>
-              </li>
-            </ul>
           </div>
         </div>
       </div>
@@ -127,7 +82,6 @@
 import { ref, watch, onMounted, nextTick, computed } from "vue";
 import { useRouter } from "vue-router";
 import Snowfall from "../components/Snowfall.vue";
-import Neural from "../components/Neural.vue";
 import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
@@ -178,12 +132,7 @@ const chatHistory = ref(null);
 const currentTheme = ref("Snowfall");
 
 const currentThemeComponent = computed(() => {
-  switch (currentTheme.value) {
-    case "Neural":
-      return Neural;
-    default:
-      return Snowfall;
-  }
+  return Snowfall;
 });
 
 const token = localStorage.getItem("jwtToken");
@@ -544,10 +493,11 @@ onMounted(() => {
 .text {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%); /* Center the element horizontally */
-  font-size: 18px;
+  transform: translateX(-50%);
+  /* Center the element horizontally */
+  font-size: 22px;
   font-weight: bold;
-  color: #d3d3d3;
+  color: #4e4e4e;
 }
 
 .icon {
@@ -557,6 +507,8 @@ onMounted(() => {
   gap: 5px;
   flex-direction: row;
   align-items: center;
+  font-size: 16px;
+  color: #ffffffd0;
 }
 
 .question-list {
@@ -585,7 +537,7 @@ onMounted(() => {
 }
 
 .question-button:hover {
-  background-color: rgba(173, 216, 230, 0.5);
+  background-color: #8aadb8;
 }
 
 .chat-history {
@@ -598,7 +550,7 @@ onMounted(() => {
 }
 
 .message {
-  background: rgba(173, 216, 230, 0.05);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 10px;
@@ -618,20 +570,22 @@ onMounted(() => {
 }
 
 .message-time {
-  color: #ccc;
+  color: #191919;
   font-size: 12px;
 }
 
 .message-content {
-  color: #fff;
+  color: #191919;
 }
 
 .image-container {
   display: flex;
   gap: 30px;
   justify-content: left;
-  flex-wrap: wrap; /* 超过容器宽度时自动换行 */
-  overflow-x: hidden; /* 防止水平滚动 */
+  flex-wrap: wrap;
+  /* 超过容器宽度时自动换行 */
+  overflow-x: hidden;
+  /* 防止水平滚动 */
 }
 
 .response-image {
@@ -639,7 +593,8 @@ onMounted(() => {
   height: 150px;
   margin-top: 10px;
   border-radius: 5px;
-  object-fit: cover; /* 图片内容适应框 */
+  object-fit: cover;
+  /* 图片内容适应框 */
 }
 
 .response {
@@ -651,7 +606,7 @@ onMounted(() => {
 
 .response button {
   background-color: #2e3140;
-  color: white;
+  color: #ccc;
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
@@ -676,8 +631,8 @@ onMounted(() => {
   border: none;
   border-radius: 5px;
   margin-right: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #d3d3d3;
+  background-color: rgba(101, 101, 127, 0.15);
+  color: #000000;
   height: 50px;
   font-family: "Consolas", monospace;
   font-size: 15px;
@@ -686,7 +641,7 @@ onMounted(() => {
 .input-area button {
   flex: 1;
   padding: 10px;
-  background-color: rgba(0, 123, 255, 0.1);
+  background-color: rgba(101, 101, 127, 0.7);
   color: white;
   border: none;
   border-radius: 5px;
@@ -695,48 +650,6 @@ onMounted(() => {
 }
 
 .input-area button:hover {
-  background-color: #0056b3;
-}
-
-.history-section {
-  flex: 1;
-  background-color: rgba(128, 128, 128, 0.05);
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.history-section h4 {
-  color: #d3d3d3;
-  margin-bottom: 10px;
-}
-
-.history-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.history-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(60, 63, 87, 0.65);
-  padding: 8px;
-  border-radius: 4px;
-  color: #d3d3d3;
-}
-
-.history-list button {
-  background: none;
-  border: none;
-  color: #d3d3d3;
-  cursor: pointer;
-}
-
-.hidden {
-  display: none;
+  background-color: #3e3e5f;
 }
 </style>

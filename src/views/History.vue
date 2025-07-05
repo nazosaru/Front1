@@ -69,7 +69,6 @@
 import {ref, onMounted, computed} from "vue";
 import {useRouter} from "vue-router";
 import Snowfall from "../components/Snowfall.vue";
-import Neural from "../components/Neural.vue";
 import {getUsername} from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
 import {API_ENDPOINTS} from "../config/apiConfig";
@@ -79,12 +78,7 @@ const router = useRouter();
 // 主题相关
 const currentTheme = ref("Snowfall");
 const currentThemeComponent = computed(() => {
-  switch (currentTheme.value) {
-    case "Neural":
-      return Neural;
-    default:
       return Snowfall;
-  }
 });
 
 // 历史记录数据
@@ -280,7 +274,7 @@ const formatTime = (timeString) => {
   flex-direction: column;
   height: 100%;
   padding: 20px;
-  color: #d3d3d3;
+  color: #353535;
 }
 
 .history-header {
@@ -294,7 +288,7 @@ const formatTime = (timeString) => {
 
 .history-header h2 {
   font-size: 1.5rem;
-  color: #d3d3d3;
+  color: #353535;
   margin: 0;
 }
 
@@ -304,8 +298,8 @@ const formatTime = (timeString) => {
 }
 
 .action-button {
-  background-color: rgba(46, 49, 64, 0.8);
-  color: #d3d3d3;
+  background-color: rgba(46,49,64);
+  color: #ccc;
   border: 1px solid rgba(84, 83, 83, 0.5);
   border-radius: 5px;
   padding: 8px 15px;
@@ -315,7 +309,7 @@ const formatTime = (timeString) => {
 }
 
 .action-button:hover {
-  background-color: rgba(173, 216, 230, 0.3);
+  background-color: #434653;
 }
 
 .history-list-container {
@@ -405,8 +399,9 @@ const formatTime = (timeString) => {
 .empty-history {
   text-align: center;
   padding: 40px;
-  color: rgba(211, 211, 211, 0.5);
+  color: rgba(25,25,25, 0.5);
   font-style: italic;
+  font-size: 1.3rem;
 }
 
 /* 详情弹窗样式 */

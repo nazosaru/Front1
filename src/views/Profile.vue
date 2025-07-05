@@ -2,6 +2,7 @@
   <component :is="currentThemeComponent" />
   <Dashboard>
     <template #left-content>
+
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,23 +10,17 @@
 
         <link rel="stylesheet" href="style.css" />
 
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-        />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
       </head>
 
       <body>
-        <div class="navbar-top">
+        <!-- <div class="navbar-top">
           <div class="title">
             <h1>Profile</h1>
           </div>
 
           <ul>
-            <li
-              @mouseover="showForm('form1Vision')"
-              @mouseleave="startHideTimer('form1Vision')"
-            >
+            <li @mouseover="showForm('form1Vision')" @mouseleave="startHideTimer('form1Vision')">
               <a href="#message">
                 <i class="fa fa-envelope fa-2x"></i>
               </a>
@@ -33,10 +28,7 @@
                 <Official :isVisible="isForm1Visible"></Official>
               </div>
             </li>
-            <li
-              @mouseover="showForm('form2Vision')"
-              @mouseleave="startHideTimer('form2Vision')"
-            >
+            <li @mouseover="showForm('form2Vision')" @mouseleave="startHideTimer('form2Vision')">
               <a href="#notification">
                 <i class="fa fa-bell fa-2x"> </i>
               </a>
@@ -44,111 +36,49 @@
                 <Activity :isVisible="isForm2Visible"></Activity>
               </div>
             </li>
-            <li
-              @mouseover="showForm('form3Vision')"
-              @mouseleave="startHideTimer('form3Vision')"
-            >
+            <li @mouseover="showForm('form3Vision')" @mouseleave="startHideTimer('form3Vision')">
               <a href="#edit">
                 <i class="fa fa-pen fa-2x"> </i>
               </a>
               <div class="form3Vision">
-                <PersonContent
-                  :isVisible="isForm3Visible"
-                  @hide="hideForm"
-                  @toggleForm="handleToggleForm"
-                  @answer="handleAnswer"
-                  @feedBack="handleFeedBack"
-                  @pay="handlePay"
-                  @delete="handleDelete"
-                  @personalization="handlePersonalization"
-                ></PersonContent>
+                <PersonContent :isVisible="isForm3Visible" @hide="hideForm" @toggleForm="handleToggleForm"
+                  @answer="handleAnswer" @feedBack="handleFeedBack" @pay="handlePay" @delete="handleDelete"
+                  @personalization="handlePersonalization"></PersonContent>
               </div>
             </li>
           </ul>
-        </div>
+        </div> -->
 
         <div class="main">
-          <h2>IDENTITY</h2>
+          <h2>About us</h2>
 
           <div class="card">
             <div class="card-body">
               <table>
                 <tbody>
                   <tr>
-                    <td>Name</td>
-                    <td>:</td>
-                    <td>ImDezCode</td>
-                  </tr>
-                  <tr>
-                    <td>Nickname</td>
-                    <td>:</td>
-                    <td>ImDezCode001</td>
-                  </tr>
-                  <tr>
-                    <td>Sex</td>
-                    <td>:</td>
-                    <td>Female</td>
-                  </tr>
-                  <tr>
-                    <td>Birthday</td>
-                    <td>:</td>
-                    <td>The Code Day</td>
-                  </tr>
-                  <tr>
-                    <td>Email</td>
-                    <td>:</td>
-                    <td>imdezcode@gmail.com</td>
-                  </tr>
-                  <tr>
-                    <td>Address</td>
-                    <td>:</td>
-                    <td>Bali, Indonesia</td>
-                  </tr>
-                  <tr>
-                    <td>Hobbies</td>
-                    <td>:</td>
-                    <td>Diving, Reading Book</td>
-                  </tr>
-                  <tr>
-                    <td>Job</td>
-                    <td>:</td>
-                    <td>Web Developer</td>
-                  </tr>
-                  <tr>
-                    <td>Skill</td>
-                    <td>:</td>
-                    <td>PHP, HTML, CSS, Java</td>
+                    <td colspan="3"
+                      style="text-align: center; padding: 40px; color: rgba(25,25,25, 0.5); font-style: italic; font-size: 1.7rem;">
+                      To be continued
+                    </td>
                   </tr>
                 </tbody>
               </table>
+
             </div>
           </div>
+
         </div>
       </body>
     </template>
   </Dashboard>
   <Edit :isVisible="isEditVisible" @update:isVisible="isEditVisible = $event" />
-  <Answer
-    :isVisible="isAnswerVisible"
-    @update:isVisible="isAnswerVisible = $event"
-  ></Answer>
-  <FeedBack
-    :isVisible="isFeedBackVisible"
-    @update:isVisible="isFeedBackVisible = $event"
-  />
-  <Pay
-    :isVisible="isPayVisible"
-    @update:isVisible="isPayVisible = $event"
-  ></Pay>
-  <Personalization
-    :isVisible="isPersonalizationVisible"
-    @update:isVisible="isPersonalizationVisible = $event"
-  >
+  <Answer :isVisible="isAnswerVisible" @update:isVisible="isAnswerVisible = $event"></Answer>
+  <FeedBack :isVisible="isFeedBackVisible" @update:isVisible="isFeedBackVisible = $event" />
+  <Pay :isVisible="isPayVisible" @update:isVisible="isPayVisible = $event"></Pay>
+  <Personalization :isVisible="isPersonalizationVisible" @update:isVisible="isPersonalizationVisible = $event">
   </Personalization>
-  <Delete
-    :isVisible="isDeleteVisible"
-    @update:isVisible="isDeleteVisible = $event"
-  ></Delete>
+  <Delete :isVisible="isDeleteVisible" @update:isVisible="isDeleteVisible = $event"></Delete>
 </template>
 
 <script setup>
@@ -164,7 +94,6 @@ import Pay from "../components/Pay.vue";
 import Delete from "../components/Delete.vue";
 import Answer from "../components/Answer.vue";
 import Snowfall from "../components/Snowfall.vue";
-import Neural from "../components/Neural.vue";
 import Dashboard from "../components/Dashboard.vue";
 import Personalization from "../components/Personalizaion.vue";
 
@@ -188,12 +117,7 @@ const isPersonalizationVisible = ref(false);
 const currentTheme = ref("Snowfall");
 
 const currentThemeComponent = computed(() => {
-  switch (currentTheme.value) {
-    case "Neural":
-      return Neural;
-    default:
-      return Snowfall;
-  }
+  return Snowfall;
 });
 
 // 用于隐藏定时器
@@ -388,12 +312,17 @@ ul li a i:hover {
   background-color: rgba(128, 128, 128, 0.05);
   border-radius: 18px;
   padding: 30px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 创建一个柔和的阴影效果，使元素从页面中浮起来，增强视觉层次感 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* 创建一个柔和的阴影效果，使元素从页面中浮起来，增强视觉层次感 */
   position: absolute;
-  top: 200%; /* 将元素的顶部边缘定位在其包含块的顶部边缘以下 200% 的位置 */
-  left: 50%; /* 将元素的左边缘定位在其包含块的左边缘的 50% 位置 */
-  transform: translateX(-100%); /* 将元素在水平方向上移动其自身宽度的 50% */
-  z-index: 10; /* 设置元素的堆叠顺序，值越大，元素越位于其他元素之上 */
+  top: 200%;
+  /* 将元素的顶部边缘定位在其包含块的顶部边缘以下 200% 的位置 */
+  left: 50%;
+  /* 将元素的左边缘定位在其包含块的左边缘的 50% 位置 */
+  transform: translateX(-100%);
+  /* 将元素在水平方向上移动其自身宽度的 50% */
+  z-index: 10;
+  /* 设置元素的堆叠顺序，值越大，元素越位于其他元素之上 */
 }
 
 .main {
