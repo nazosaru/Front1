@@ -163,14 +163,13 @@ import FeedBack from "../components/FeedBack.vue";
 import Pay from "../components/Pay.vue";
 import Delete from "../components/Delete.vue";
 import Answer from "../components/Answer.vue";
-import Starfield from "../components/Starfield.vue";
-import CrossStar from "@/components/CrossStar.vue";
+import Snowfall from "../components/Snowfall.vue";
 import Neural from "../components/Neural.vue";
 import Dashboard from "../components/Dashboard.vue";
 import Personalization from "../components/Personalizaion.vue";
 
 import { defineEmits } from "vue";
-import StarfieldVue from "../components/Starfield.vue";
+
 
 const router = useRouter();
 const goHome = () => router.push("/home");
@@ -186,16 +185,14 @@ const isPayVisible = ref(false);
 const isDeleteVisible = ref(false);
 const isPersonalizationVisible = ref(false);
 
-const currentTheme = ref("Starfield");
+const currentTheme = ref("Snowfall");
 
 const currentThemeComponent = computed(() => {
   switch (currentTheme.value) {
     case "Neural":
       return Neural;
-    case "CrossStar":
-      return CrossStar;
     default:
-      return Starfield;
+      return Snowfall;
   }
 });
 

@@ -19,8 +19,7 @@ import {
 import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 import dashboard from "../components/Dashboard.vue";
-import Starfield from "../components/Starfield.vue";
-import CrossStar from "@/components/CrossStar.vue";
+import Snowfall from "../components/Snowfall.vue";
 import Neural from "../components/Neural.vue";
 import { getUsername } from "@/utils/Auth";
 
@@ -30,7 +29,7 @@ const route = useRoute();
 
 const htmlContent = ref("");
 
-const currentTheme = ref("Starfield");
+const currentTheme = ref("Snowfall");
 
 const checkUserAndInitialize = () => {
   const username = getUsername();
@@ -49,10 +48,8 @@ const currentThemeComponent = computed(() => {
   switch (currentTheme.value) {
     case "Neural":
       return Neural;
-    case "CrossStar":
-      return CrossStar;
     default:
-      return Starfield;
+      return Snowfall;
   }
 });
 

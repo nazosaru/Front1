@@ -104,8 +104,7 @@
 <script setup>
 import { ref, watch, nextTick, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import Starfield from "../components/Starfield.vue";
-import CrossStar from "@/components/CrossStar.vue";
+import Snowfall from "../components/Snowfall.vue";
 import Neural from "../components/Neural.vue";
 import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
@@ -165,16 +164,14 @@ const userInput = ref("");
 const isLoading = ref(false);
 const chatHistory = ref(null);
 
-const currentTheme = ref("Starfield");
+const currentTheme = ref("Snowfall");
 
 const currentThemeComponent = computed(() => {
   switch (currentTheme.value) {
     case "Neural":
       return Neural;
-    case "CrossStar":
-      return CrossStar;
     default:
-      return Starfield;
+      return Snowfall;
   }
 });
 

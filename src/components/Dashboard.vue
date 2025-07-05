@@ -43,25 +43,15 @@
 
             <li
               class="nav-item"
-              :class="{ active: isActive('/dialogue') }"
-              @click="navigateTo('/dialogue')"
+              :class="{ active: isActive('/history') }"
+              @click="navigateTo('/history')"
             >
               <a href="#">
                 <i class="fa fa-circle-play nav-icon"></i>
-                <span class="nav-text">Dialog</span>
+                <span class="nav-text">History</span>
               </a>
             </li>
 
-            <li
-              class="nav-item"
-              :class="{ active: isActive('/others') }"
-              @click="navigateTo('/others')"
-            >
-              <a href="#">
-                <i class="fa fa-heart nav-icon"></i>
-                <span class="nav-text">About</span>
-              </a>
-            </li>
           </ul>
         </div>
 
@@ -104,7 +94,7 @@ const router = useRouter();
 const route = useRoute();
 const username = getUsername();
 
-const avatarSrc = ref("../assets/avatar/lst.jpg"); // 默认头像
+const avatarSrc = ref("public/user.svg"); // 默认头像
 
 onMounted(() => {
   // 从 localStorage 或其他地方获取头像文件路径

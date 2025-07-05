@@ -11,10 +11,7 @@
               <tr>
                 <th>Username</th>
                 <th>Email</th>
-                <th>Nickname</th>
-                <th>Birthday</th>
-                <th>Sex</th>
-                <th>Description</th>
+                <th>User Role</th>
                 <th>Operation</th>
               </tr>
             </thead>
@@ -30,56 +27,26 @@
                 </td>
                 <td v-else>{{ user.email }}</td>
 
-                <td v-if="editingIndex === index">
-                  <input v-model="editUserData.nickname" />
-                </td>
-                <td v-else>{{ user.nickname || "N/A" }}</td>
-
-                <td v-if="editingIndex === index">
-                  <input type="date" v-model="editUserData.birthday" />
-                </td>
-                <td v-else>{{ formatDate(user.birthday) || "N/A" }}</td>
-
-                <td v-if="editingIndex === index">
-                  <input
-                    v-model="editUserData.Sex"
-                    placeholder="Sex not specified"
-                  />
-                </td>
-                <td v-else>{{ user.sex || "N/A" }}</td>
-
-                <td v-if="editingIndex === index">
-                  <input v-model="editUserData.description" />
-                </td>
-                <td v-else>{{ user.description || "N/A" }}</td>
+                <td>{{ user.permission_level === 1 ? 'user' : 'admin' }}</td>
 
                 <td>
-                  <button
-                    v-if="editingIndex === index"
-                    @click="saveUser(index)"
-                  >
+                  <button v-if="editingIndex === index" @click="saveUser(index)">
                     Store
                   </button>
                   <button v-else @click="editUser(index)">Edit</button>
 
-                  <!-- 删除用户按钮 -->
-                  <button
-                    v-if="editingIndex !== index"
-                    @click="deleteUser(index)"
-                  >
+                  <button v-if="editingIndex !== index" @click="deleteUser(index)">
                     Delete
                   </button>
 
-                  <button
-                    v-if="editingIndex === index"
-                    @click="cancelEdit(index)"
-                  >
+                  <button v-if="editingIndex === index" @click="cancelEdit(index)">
                     Cancel
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
+
         </div>
       </div>
     </template>
@@ -89,9 +56,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import axios from "axios"; // 引入axios用于发送请求
-
-import Starfield from "@/components/Starfield.vue";
+import axios from "axios";
+import Starfield from "@/components/Snowfall.vue";
 import { getUsername } from "@/utils/Auth";
 import { API_ENDPOINTS } from "../../config/apiConfig";
 import Dashboard from "@/components/DashboardAdmin.vue";
@@ -99,21 +65,9 @@ import Dashboard from "@/components/DashboardAdmin.vue";
 const router = useRouter();
 const route = useRoute();
 
-// 用户数据
 const users = ref([]);
-
-// 当前正在编辑的行索引
 const editingIndex = ref(null);
-
-// 存储编辑的数据
-const editUserData = ref({
-  username: "",
-  email: "",
-  nickname: "",
-  birthday: "",
-  Sex: "",
-  description: "",
-});
+const editUserData = ref({ username: "", email: "" });
 
 const api = {
   get_user_info: API_ENDPOINTS.get_user_info,
@@ -122,19 +76,18 @@ const api = {
 };
 
 let url = ref(api.get_user_info);
-const token = localStorage.getItem("jwtToken"); // 从 localStorage 获取 JWT 令牌
+const token = localStorage.getItem("jwtToken");
 
-// 从后端获取用户数据
 const fetchUsers = async () => {
   try {
     const response = await axios.get(url.value, {
       headers: {
-        Authorization: `Bearer ${token}`, // 添加 Authorization 头部
+        Authorization: `Bearer ${token}`,
       },
     });
 
     if (response.data.code === 0) {
-      users.value = response.data.data; // 将返回的数据赋值给 users
+      users.value = response.data.data;
     } else {
       console.error("获取用户数据失败:", response.data.message);
     }
@@ -143,14 +96,12 @@ const fetchUsers = async () => {
   }
 };
 
-// 开始编辑用户信息
 const editUser = (index) => {
   editingIndex.value = index;
   editUserData.value = { ...users.value[index] };
 };
 
 let url2 = api.edit_user_info;
-// 保存用户信息
 const saveUser = async (index) => {
   if (editingIndex.value !== null) {
     users.value[index] = { ...editUserData.value };
@@ -158,22 +109,12 @@ const saveUser = async (index) => {
     const formData = new FormData();
     formData.append("username", users.value[index].username);
     formData.append("email", users.value[index].email);
-    formData.append("nickname", users.value[index].nickname);
-    formData.append(
-      "sex",
-      !users.value[index].Sex ? 3 : users.value[index].Sex
-    );
-    formData.append("description", users.value[index].description);
-    formData.append(
-      "birthday",
-      !users.value[index].birthday ? "2000-01-01" : users.value[index].birthday
-    );
 
     try {
       const response = await fetch(url2, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`, // 添加 Authorization 头部
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       });
@@ -192,7 +133,6 @@ const saveUser = async (index) => {
 };
 
 let url3 = api.delete_user;
-// 删除用户
 const deleteUser = async (index) => {
   if (confirm("Are you sure you want to delete this user?")) {
     alert("User has been deleted!");
@@ -201,22 +141,19 @@ const deleteUser = async (index) => {
       editUserData.value = {};
     }
 
-    const urlEncodedParams = new URLSearchParams(
-      Object.entries(users.value[index])
-    );
+    const urlEncodedParams = new URLSearchParams(Object.entries(users.value[index]));
 
     try {
       const response = await fetch(url3, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`, // 添加 Authorization 头部
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: urlEncodedParams.toString(),
       });
 
       const result = await response.json();
-
       if (response.ok) {
         editingIndex.value = null;
         fetchUsers();
@@ -229,24 +166,14 @@ const deleteUser = async (index) => {
   }
 };
 
-// 取消编辑
 const cancelEdit = (index) => {
   if (confirm("Are you sure you want to cancel the modification?")) {
     editingIndex.value = null;
   }
 };
 
-// 格式化日期
-const formatDate = (date) => {
-  if (!date) return null;
-  const formattedDate = new Date(date);
-  return formattedDate.toLocaleDateString();
-};
-
-// 页面加载时获取用户数据
 onMounted(() => {
   const username = getUsername();
-
   if (!username) {
     router.push("/");
   } else {
@@ -256,7 +183,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 样式保持不变 */
+.main-content h2 {
+  color: #ffffff;       /* 设置为白色 */
+  font-size: 26px;      /* 字体大小可根据需要调整 */
+  font-weight: 600;     /* 加粗，可选 */
+  margin-bottom: 20px;  /* 与下方表格保持距离 */
+}
+
 body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
@@ -299,40 +232,39 @@ body {
   overflow-y: auto;
 }
 
+.user-table th {
+  background-color: rgba(62, 62, 95, 0.6);
+  text-align: center;
+}
+
 .user-table th,
 .user-table td {
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 10px;
+  padding: 12px 10px; /* 增加垂直 padding */
   text-align: left;
-}
-
-.user-table th {
-  background-color: rgba(62, 62, 95, 0.6);
-}
-
-.user-table th:nth-child(7),
-.user-table td:nth-child(7) {
-  width: 200px; /* 设置 Operation 列的宽度为100px，可以根据需要调整 */
-  text-align: center; /* 使内容居中 */
+  line-height: 1.6; /* 可选：提高行内内容的高度感 */
+  min-height: 48px; /* 设置最小行高 */
 }
 
 .user-table button {
   margin-right: 5px;
-  padding: 5px 10px;
+  padding: 8px 12px; /* 增加按钮内边距 */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   color: #fff;
   background-color: #0dbe83;
-  width: 40%;
-  height: 100%;
+  width: 45%;
+  height: 38px; /* 设置按钮高度 */
   margin-left: 5px;
   margin-right: 5px;
+  font-size: 14px;
 }
 
-.user-table button:hover {
-  background-color: #0dbe83;
-}
+
+  .user-table button:hover {
+    background-color: #0dbe83;
+  }
 
 .user-table button:active {
   background-color: #0056b3;
@@ -343,8 +275,14 @@ body {
   padding: 5px;
   box-sizing: border-box;
   border-radius: 3px;
-  border: 1px solid #444;
-  background-color: #1f1f3f;
+  border: 1px solid #3e4a6b;
+  background-color: #3e4a6b;
   color: #d3d3d3;
+}
+
+.user-table th:nth-child(3),
+.user-table td:nth-child(3) {
+  text-align: center;
+  width: 120px;
 }
 </style>
