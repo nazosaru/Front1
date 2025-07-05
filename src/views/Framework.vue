@@ -57,41 +57,65 @@ onMounted(() => {
 <style scoped>
 /* 设置全局样式 */
 body {
-  margin: 0; /* 去除默认的外边距 */
-  font-family: "Montserrat", sans-serif; /* 设置字体为 Montserrat */
-  color: #d3d3d3; /* 设置文本颜色 */
-  display: flex; /* 设置为弹性布局 */
-  flex-direction: column; /* 设置主轴方向为垂直 */
+  margin: 0;
+  /* 去除默认的外边距 */
+  font-family: "Montserrat", sans-serif;
+  /* 设置字体为 Montserrat */
+  color: #d3d3d3;
+  /* 设置文本颜色 */
+  display: flex;
+  /* 设置为弹性布局 */
+  flex-direction: column;
+  /* 设置主轴方向为垂直 */
 }
 
 /* 设置管理面板的样式 */
 .admin-panel {
-  display: flex; /* 设置为弹性布局 */
-  height: calc(100vh - 10px); /* 设置高度为视口高度减去 10px */
-  margin: 5px; /* 设置外边距 */
-  border-radius: 5px; /* 设置圆角 */
-  overflow: hidden; /* 隐藏溢出内容 */
-  box-sizing: border-box; /* 设置盒模型为 border-box */
-  flex-direction: column; /* 设置主轴方向为垂直 */
+  display: flex;
+  /* 设置为弹性布局 */
+  height: calc(100vh - 10px);
+  /* 设置高度为视口高度减去 10px */
+  margin: 5px;
+  /* 设置外边距 */
+  border-radius: 5px;
+  /* 设置圆角 */
+  overflow: hidden;
+  /* 隐藏溢出内容 */
+  box-sizing: border-box;
+  /* 设置盒模型为 border-box */
+  flex-direction: column;
+  /* 设置主轴方向为垂直 */
 }
 
 /* 设置非头部区域的样式 */
 .non-header {
-  display: flex; /* 设置为弹性布局 */
-  height: calc(100% - 60px); /* 设置高度为父容器高度减去 60px */
-  flex-direction: row; /* 设置主轴方向为水平 */
+  display: flex;
+  /* 设置为弹性布局 */
+  height: calc(100% - 60px);
+  /* 设置高度为父容器高度减去 60px */
+  flex-direction: row;
+  /* 设置主轴方向为水平 */
 }
 
 /* 设置主要内容区域的样式 */
 .main-content {
-  display: flex; /* 设置为弹性布局 */
-  flex: 1; /* 占据剩余空间 */
-  flex-direction: column; /* 设置主轴方向为垂直 */
-  padding: 10px; /* 设置内边距 */
-  align-items: center; /* 设置子元素在主轴上的对齐方式为居中 */
-  overflow-y: auto; /* 设置垂直方向可滚动 */
-  justify-content: space-between; /* 设置子元素在交叉轴上的分布为两端对齐 */
-  box-sizing: border-box; /* 设置盒模型为 border-box */
-  height: calc(100%); /* 设置高度为父容器高度的 100% */
+  display: flex;
+  /* 设置为弹性布局 */
+  flex: 1;
+  /* 占据剩余空间 */
+  flex-direction: column;
+  /* 设置主轴方向为垂直 */
+  padding: 10px;
+  /* 设置内边距 */
+  align-items: center;
+  /* 设置子元素在主轴上的对齐方式为居中 */
+  overflow-y: auto;
+  /* 设置垂直方向可滚动 */
+  justify-content: space-between;
+  /* 设置子元素在交叉轴上的分布为两端对齐 */
+  box-sizing: border-box;
+  /* 设置盒模型为 border-box */
+  height: calc(100%);
+  /* 设置高度为父容器高度的 100% */
 }
 </style>

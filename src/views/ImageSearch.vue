@@ -261,11 +261,9 @@ const uploadImageFromList = async (index) => {
     const result = await responseAPI.json();
     const responseTime = new Date().toLocaleTimeString();
 
-    // 添加系统响应消息
+    // 直接使用caption字段内容
     messages.value.push({
-      text: result.text_list
-        ? result.text_list.map((text) => text.content).join("\n")
-        : "This is the response provided by the system",
+      text: result.caption || "This is the response provided by the system",
       time: responseTime,
       isResponse: true,
     });
@@ -337,15 +335,13 @@ const sendImage = async (isRetry = false, index = -1) => {
     }
 
     const result = await response.json();
-
     console.log(result);
 
     const responseTime = new Date().toLocaleTimeString();
     
+    // 直接使用caption字段内容
     messages.value.push({
-      text: result.text_list
-        ? result.text_list.map((text) => text.content).join("\n")
-        : "This is the response provided by the system",
+      text: result.caption || "This is the response provided by the system",
       time: responseTime,
       isResponse: true,
       loading: false,

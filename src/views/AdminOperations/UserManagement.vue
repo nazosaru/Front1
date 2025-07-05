@@ -35,7 +35,7 @@
                   </button>
                   <button v-else @click="editUser(index)">Edit</button>
 
-                  <button v-if="editingIndex !== index" @click="deleteUser(index)">
+                  <button class="delete-btn" v-if="editingIndex !== index" @click="deleteUser(index)">
                     Delete
                   </button>
 
@@ -184,10 +184,14 @@ onMounted(() => {
 
 <style scoped>
 .main-content h2 {
-  color: #ffffff;       /* 设置为白色 */
-  font-size: 26px;      /* 字体大小可根据需要调整 */
-  font-weight: 600;     /* 加粗，可选 */
-  margin-bottom: 20px;  /* 与下方表格保持距离 */
+  color: #ffffff;
+  /* 设置为白色 */
+  font-size: 26px;
+  /* 字体大小可根据需要调整 */
+  font-weight: 600;
+  /* 加粗，可选 */
+  margin-bottom: 20px;
+  /* 与下方表格保持距离 */
 }
 
 body {
@@ -233,41 +237,50 @@ body {
 }
 
 .user-table th {
-  background-color: rgba(62, 62, 95, 0.6);
+  background-color: rgba(106, 109, 155, 0.5);
   text-align: center;
 }
 
 .user-table th,
 .user-table td {
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 12px 10px; /* 增加垂直 padding */
+  padding: 12px 10px;
+  /* 增加垂直 padding */
   text-align: left;
-  line-height: 1.6; /* 可选：提高行内内容的高度感 */
-  min-height: 48px; /* 设置最小行高 */
+  line-height: 1.6;
+  /* 可选：提高行内内容的高度感 */
+  min-height: 48px;
+  /* 设置最小行高 */
 }
 
 .user-table button {
   margin-right: 5px;
-  padding: 8px 12px; /* 增加按钮内边距 */
+  padding: 8px 12px;
+  /* 增加按钮内边距 */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   color: #fff;
   background-color: #0dbe83;
   width: 45%;
-  height: 38px; /* 设置按钮高度 */
+  height: 38px;
+  /* 设置按钮高度 */
   margin-left: 5px;
   margin-right: 5px;
   font-size: 14px;
 }
 
 
-  .user-table button:hover {
-    background-color: #0dbe83;
-  }
+.user-table button:hover {
+  background-color: #0dbe83;
+}
 
 .user-table button:active {
   background-color: #0056b3;
+}
+
+.delete-btn:active {
+  background-color: #d9534f !important;
 }
 
 .user-table input {
@@ -275,9 +288,9 @@ body {
   padding: 5px;
   box-sizing: border-box;
   border-radius: 3px;
-  border: 1px solid #3e4a6b;
-  background-color: #3e4a6b;
-  color: #d3d3d3;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(106, 109, 155, 0.1);
+  color: #fff;
 }
 
 .user-table th:nth-child(3),
