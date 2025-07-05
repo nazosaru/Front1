@@ -164,7 +164,6 @@ import Pay from "../components/Pay.vue";
 import Delete from "../components/Delete.vue";
 import Answer from "../components/Answer.vue";
 import Snowfall from "../components/Snowfall.vue";
-import Neural from "../components/Neural.vue";
 import Dashboard from "../components/Dashboard.vue";
 import Personalization from "../components/Personalizaion.vue";
 
@@ -188,12 +187,7 @@ const isPersonalizationVisible = ref(false);
 const currentTheme = ref("Snowfall");
 
 const currentThemeComponent = computed(() => {
-  switch (currentTheme.value) {
-    case "Neural":
-      return Neural;
-    default:
       return Snowfall;
-  }
 });
 
 // 用于隐藏定时器

@@ -57,20 +57,20 @@
 
         <ul>
           <li
-            class="nav-item"
+            class="nav-item1"
             :class="{ active: isActive('/profile') }"
             @click="navigateTo('/profile')"
           >
             <a href="#">
               <i class="fa fa-user nav-icon"></i>
-              <span class="nav-text">Profile</span>
+              <span class="nav-text1">Profile</span>
             </a>
           </li>
 
-          <li class="nav-item" @click="GoToLogin">
+          <li class="nav-item1" @click="GoToLogin">
             <a href="#">
               <i class="fa fa-right-from-bracket nav-icon"></i>
-              <span class="nav-text">Logout</span>
+              <span class="nav-text1" >Logout</span>
             </a>
           </li>
         </ul>
@@ -168,7 +168,7 @@ body {
 /* 主菜单样式 */
 main {
   display: grid;
-  grid-template-columns: 11% 89%; /* 主菜单和内容区宽度比例 */
+  grid-template-columns: 15% 85%; /* 主菜单和内容区宽度比例 */
   width: 100%;
   height: 100vh; /* 高度填满视口 */
   margin: 0px;
@@ -213,13 +213,14 @@ main {
 
 .nav-item a {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center; /* 垂直居中 */
+  justify-content: flex-start; /* 左对齐 */
   color: #fff;
   font-size: 1rem;
-  padding: 12px 0;
+  padding: 16px 20px; /* 增加左右内边距 */
   margin: 0 8px;
   border-radius: 5px;
+  height: 56px; /* 统一高度 */
 }
 
 .nav-item a i {
@@ -236,10 +237,46 @@ main {
   text-decoration: none;
 }
 
+.nav-item1 {
+  display: block;
+}
+
+.nav-item1 a {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: flex-start; /* 左对齐 */
+  color: #fff;
+  font-size: 1rem;
+  padding: 16px 20px; /* 增加左右内边距 */
+  margin: 0 8px;
+  border-radius: 5px;
+  height: 56px; /* 统一高度 */
+}
+
+.nav-item1 a i {
+  display: -ms-inline-flexbox;
+  color: #3e3e5f; /* 图标颜色 */
+}
+
+.nav-item1 a i:hover {
+  color: #ffffffd0; /* 图标悬停颜色 */
+}
+
+.nav-item1.active a {
+  background: rgba(106, 109, 155, 0.5); /* 活动菜单项背景色 */
+  text-decoration: none;
+}
+
+
 .nav-icon {
-  width: 40px;
-  height: 20px;
-  font-size: 1.1rem; /* 图标大小 */
+  font-size: 1.2rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; /* 固定宽度 */
+  height: 24px; /* 固定高度 */
+  margin-right: 12px; /* 图标与文字间距 */
 }
 
 .nav-text {
@@ -248,6 +285,15 @@ main {
   height: 20px;
   letter-spacing: 0;
 }
+
+.nav-text1 {
+  white-space: nowrap; /* 禁止换行 */
+  text-overflow: ellipsis; /* 超出显示省略号 */
+  display: inline-block; /* 保证在一行显示 */
+  line-height: 1.2;
+  color: #191919;
+}
+
 
 /* 内容区样式 */
 .content {

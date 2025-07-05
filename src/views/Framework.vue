@@ -16,7 +16,6 @@ import Snowfall from "@/components/Snowfall.vue"; // 导入 Snowfall 组件
 import Show from "@/components/Show.vue"; // 导入 Show 组件
 import { getUsername } from "@/utils/Auth"; // 导入 getUsername 函数，用于获取用户名
 import Dashboard from "@/components/Dashboard.vue"; // 导入 Dashboard 组件
-import Neural from "../components/Neural.vue"; // 导入 Neural 组件
 import { useThemeStore } from "../stores/themeStore"; // 导入主题状态管理 store
 
 const router = useRouter(); // 创建路由器实例
@@ -36,12 +35,7 @@ const currentTheme = ref("Snowfall"); // 定义当前主题，默认为 "Snowfal
 
 // 根据当前主题计算要显示的组件
 const currentThemeComponent = computed(() => {
-  switch (currentTheme.value) {
-    case "Neural":
-      return Neural; // 如果主题是 "Neural"，则显示 Neural 组件
-    default:
       return Snowfall; // 其他情况下显示 Snowfall 组件
-  }
 });
 
 // 页面加载时检查用户名

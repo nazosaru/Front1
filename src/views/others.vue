@@ -20,7 +20,6 @@ import { useRouter, useRoute } from "vue-router";
 import md5 from "js-md5";
 import dashboard from "../components/Dashboard.vue";
 import Snowfall from "../components/Snowfall.vue";
-import Neural from "../components/Neural.vue";
 import { getUsername } from "@/utils/Auth";
 
 const { proxy } = getCurrentInstance();
@@ -45,12 +44,7 @@ const checkUserAndInitialize = () => {
 };
 
 const currentThemeComponent = computed(() => {
-  switch (currentTheme.value) {
-    case "Neural":
-      return Neural;
-    default:
       return Snowfall;
-  }
 });
 
 const loadHtmlContent = async () => {

@@ -18,7 +18,7 @@
             <div v-if="!uiChange" :key="1">
               <div class="recommendations">
                 <div class="headbar">
-                  <div class="text">You can ask me like this</div>
+                  <div class="text" >You can ask me like this</div>
                   <div class="icon" @click="changeSelection">
                     <div>Switch to another</div>
                     <i class="fa-solid fa-rotate"></i>
@@ -102,21 +102,6 @@
               <button @click="sendMessage">➤</button>
             </div>
           </div>
-
-          <!-- History Records Section -->
-          <div class="history-section">
-            <h4>History Records</h4>
-            <ul class="history-list">
-              <li
-                v-for="(item, index) in history"
-                :key="item.id"
-                @click="fetchHistory(item.id)"
-              >
-                <span>{{ item.text }}</span>
-                <button @click.stop="removeHistory(index)">✖</button>
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
     </template>
@@ -127,7 +112,6 @@
 import { ref, watch, onMounted, nextTick, computed } from "vue";
 import { useRouter } from "vue-router";
 import Snowfall from "../components/Snowfall.vue";
-import Neural from "../components/Neural.vue";
 import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
@@ -178,12 +162,7 @@ const chatHistory = ref(null);
 const currentTheme = ref("Snowfall");
 
 const currentThemeComponent = computed(() => {
-  switch (currentTheme.value) {
-    case "Neural":
-      return Neural;
-    default:
       return Snowfall;
-  }
 });
 
 const token = localStorage.getItem("jwtToken");
@@ -545,9 +524,9 @@ onMounted(() => {
   position: absolute;
   left: 50%;
   transform: translateX(-50%); /* Center the element horizontally */
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bold;
-  color: #d3d3d3;
+  color: #4e4e4e;
 }
 
 .icon {
@@ -585,7 +564,7 @@ onMounted(() => {
 }
 
 .question-button:hover {
-  background-color: rgba(173, 216, 230, 0.5);
+  background-color: #8aadb8;
 }
 
 .chat-history {
@@ -598,7 +577,7 @@ onMounted(() => {
 }
 
 .message {
-  background: rgba(173, 216, 230, 0.05);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 10px;
@@ -618,12 +597,12 @@ onMounted(() => {
 }
 
 .message-time {
-  color: #ccc;
+  color: #191919;
   font-size: 12px;
 }
 
 .message-content {
-  color: #fff;
+  color: #191919;
 }
 
 .image-container {
@@ -651,7 +630,7 @@ onMounted(() => {
 
 .response button {
   background-color: #2e3140;
-  color: white;
+  color: #ccc;
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
@@ -676,8 +655,8 @@ onMounted(() => {
   border: none;
   border-radius: 5px;
   margin-right: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #d3d3d3;
+  background-color: rgba(101,101,127, 0.15);
+  color: #000000;
   height: 50px;
   font-family: "Consolas", monospace;
   font-size: 15px;
@@ -686,7 +665,7 @@ onMounted(() => {
 .input-area button {
   flex: 1;
   padding: 10px;
-  background-color: rgba(0, 123, 255, 0.1);
+  background-color: rgba(101,101,127, 0.7);
   color: white;
   border: none;
   border-radius: 5px;
@@ -695,48 +674,8 @@ onMounted(() => {
 }
 
 .input-area button:hover {
-  background-color: #0056b3;
+  background-color: #3e3e5f;
 }
 
-.history-section {
-  flex: 1;
-  background-color: rgba(128, 128, 128, 0.05);
-  padding: 10px;
-  border-radius: 5px;
-}
 
-.history-section h4 {
-  color: #d3d3d3;
-  margin-bottom: 10px;
-}
-
-.history-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.history-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(60, 63, 87, 0.65);
-  padding: 8px;
-  border-radius: 4px;
-  color: #d3d3d3;
-}
-
-.history-list button {
-  background: none;
-  border: none;
-  color: #d3d3d3;
-  cursor: pointer;
-}
-
-.hidden {
-  display: none;
-}
 </style>
