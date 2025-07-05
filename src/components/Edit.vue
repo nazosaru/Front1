@@ -146,6 +146,15 @@ import { useRouter, useRoute } from "vue-router";
 import Verify from "../utils/verify";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
+const FRONTEND_SALT = 'RetrievalSystem@2023';
+
+async function sha256WithSalt(message) {
+  const msgBuffer = new TextEncoder().encode(message + FRONTEND_SALT);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 import { getUsername } from "../utils/Auth";
 const username = getUsername();
 
@@ -242,7 +251,10 @@ const submitForm = async () => {
   formData.append("username", form.value.username);
   formData.append("nickname", form.value.nickname);
   formData.append("email", form.value.email);
-  formData.append("password", form.value.password);
+  if (form.value.password) {
+    const encryptedPassword = await sha256WithSalt(form.value.password);
+    formData.append("password", encryptedPassword);
+  }
   formData.append("gender", form.value.gender);
   formData.append("description", form.value.description);
   formData.append("birthday", form.value.birthday);
