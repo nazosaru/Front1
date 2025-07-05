@@ -531,7 +531,8 @@ onMounted(() => {
   gap: 5px;
   flex-direction: row;
   align-items: center;
-  color: #353535;
+  font-size: 16px;
+  color: #ffffffd0;
 }
 
 .image-list {

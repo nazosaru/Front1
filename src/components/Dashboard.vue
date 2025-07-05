@@ -194,7 +194,7 @@ main {
 }
 
 .user-info img {
-  padding: 12px 24px 6px;
+  padding: 24px 44px 12px;
   border-radius: 50%; /* 圆形头像 */
 }
 

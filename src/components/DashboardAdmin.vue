@@ -167,14 +167,13 @@ main {
 }
 
 .user-info img {
-  padding: 12px 24px 6px;
-  border-radius: 50%;
-  /* 圆形头像 */
+  padding: 24px 44px 12px;
+  border-radius: 50%; /* 圆形头像 */
 }
 
 .user-info p {
   color: #fff;
-  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
   /* 动态字体大小 */
   font-weight: 500;
   text-align: center;

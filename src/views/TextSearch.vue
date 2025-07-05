@@ -18,37 +18,25 @@
             <div v-if="!uiChange" :key="1">
               <div class="recommendations">
                 <div class="headbar">
-                  <div class="text" >You can ask me like this</div>
+                  <div class="text">You can ask me like this</div>
                   <div class="icon" @click="changeSelection">
                     <div>Switch to another</div>
                     <i class="fa-solid fa-rotate"></i>
                   </div>
                 </div>
                 <div class="question-list">
-                  <button
-                    class="question-button"
-                    @click="sendMessageIndex(0 + 4 * questionSelection)"
-                  >
+                  <button class="question-button" @click="sendMessageIndex(0 + 4 * questionSelection)">
                     {{ question[0 + 4 * questionSelection] }}
                   </button>
-                  <button
-                    class="question-button"
-                    @click="sendMessageIndex(1 + 4 * questionSelection)"
-                  >
+                  <button class="question-button" @click="sendMessageIndex(1 + 4 * questionSelection)">
                     {{ question[1 + 4 * questionSelection] }}
                   </button>
                 </div>
                 <div class="question-list">
-                  <button
-                    class="question-button"
-                    @click="sendMessageIndex(2 + 4 * questionSelection)"
-                  >
+                  <button class="question-button" @click="sendMessageIndex(2 + 4 * questionSelection)">
                     {{ question[2 + 4 * questionSelection] }}
                   </button>
-                  <button
-                    class="question-button"
-                    @click="sendMessageIndex(3 + 4 * questionSelection)"
-                  >
+                  <button class="question-button" @click="sendMessageIndex(3 + 4 * questionSelection)">
                     {{ question[3 + 4 * questionSelection] }}
                   </button>
                 </div>
@@ -57,34 +45,21 @@
 
             <!-- Search Interface -->
             <div v-if="messages.length" class="chat-history" ref="chatHistory">
-              <div
-                v-for="(message, index) in messages"
-                :key="index"
-                class="message"
-              >
+              <div v-for="(message, index) in messages" :key="index" class="message">
                 <div class="message-header">
                   <span class="message-time">{{ message.time }}</span>
                 </div>
                 <div class="message-content">
                   <p>{{ message.text }}</p>
                   <div class="image-container">
-                    <img
-                      v-for="(imageUrl, index) in message.imageurls"
-                      :key="index"
-                      :src="imageUrl"
-                      alt="image"
-                      class="response-image"
-                      @click="enlargeImage(imageUrl)"
-                    />
+                    <img v-for="(imageUrl, index) in message.imageurls" :key="index" :src="imageUrl" alt="image"
+                      class="response-image" @click="enlargeImage(imageUrl)" />
                   </div>
                   <div v-if="message.loading" class="loading-icon">
                     <i class="fa-solid fa-spinner fa-spin"></i>
                   </div>
                 </div>
-                <div
-                  v-if="message.isResponse && !message.fromHistory"
-                  class="response"
-                >
+                <div v-if="message.isResponse && !message.fromHistory" class="response">
                   <button @click="retryResponse">Retry</button>
                   <button @click="downloadAllImages">Get</button>
                 </div>
@@ -93,12 +68,7 @@
 
             <!-- Input Box -->
             <div class="input-area">
-              <input
-                type="text"
-                v-model="userInput"
-                placeholder="Please enter text..."
-                @keyup.enter="sendMessage"
-              />
+              <input type="text" v-model="userInput" placeholder="Please enter text..." @keyup.enter="sendMessage" />
               <button @click="sendMessage">➤</button>
             </div>
           </div>
@@ -162,7 +132,7 @@ const chatHistory = ref(null);
 const currentTheme = ref("Snowfall");
 
 const currentThemeComponent = computed(() => {
-      return Snowfall;
+  return Snowfall;
 });
 
 const token = localStorage.getItem("jwtToken");
@@ -523,7 +493,8 @@ onMounted(() => {
 .text {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%); /* Center the element horizontally */
+  transform: translateX(-50%);
+  /* Center the element horizontally */
   font-size: 22px;
   font-weight: bold;
   color: #4e4e4e;
@@ -536,6 +507,8 @@ onMounted(() => {
   gap: 5px;
   flex-direction: row;
   align-items: center;
+  font-size: 16px;
+  color: #ffffffd0;
 }
 
 .question-list {
@@ -609,8 +582,10 @@ onMounted(() => {
   display: flex;
   gap: 30px;
   justify-content: left;
-  flex-wrap: wrap; /* 超过容器宽度时自动换行 */
-  overflow-x: hidden; /* 防止水平滚动 */
+  flex-wrap: wrap;
+  /* 超过容器宽度时自动换行 */
+  overflow-x: hidden;
+  /* 防止水平滚动 */
 }
 
 .response-image {
@@ -618,7 +593,8 @@ onMounted(() => {
   height: 150px;
   margin-top: 10px;
   border-radius: 5px;
-  object-fit: cover; /* 图片内容适应框 */
+  object-fit: cover;
+  /* 图片内容适应框 */
 }
 
 .response {
@@ -655,7 +631,7 @@ onMounted(() => {
   border: none;
   border-radius: 5px;
   margin-right: 10px;
-  background-color: rgba(101,101,127, 0.15);
+  background-color: rgba(101, 101, 127, 0.15);
   color: #000000;
   height: 50px;
   font-family: "Consolas", monospace;
@@ -665,7 +641,7 @@ onMounted(() => {
 .input-area button {
   flex: 1;
   padding: 10px;
-  background-color: rgba(101,101,127, 0.7);
+  background-color: rgba(101, 101, 127, 0.7);
   color: white;
   border: none;
   border-radius: 5px;
@@ -676,6 +652,4 @@ onMounted(() => {
 .input-area button:hover {
   background-color: #3e3e5f;
 }
-
-
 </style>
