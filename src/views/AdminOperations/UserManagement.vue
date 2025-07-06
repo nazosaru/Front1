@@ -17,17 +17,18 @@
             </thead>
             <tbody>
               <tr v-for="(user, index) in users" :key="index">
-                <td v-if="editingIndex === index">
-                  <input v-model="editUserData.username" readonly />
-                </td>
-                <td v-else>{{ user.username }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
 
                 <td v-if="editingIndex === index">
-                  <input v-model="editUserData.email" />
+                  <select v-model="editUserData.permission_level">
+                    <option :value="1">user</option>
+                    <option :value="0">admin</option>
+                  </select>
                 </td>
-                <td v-else>{{ user.email }}</td>
-
-                <td>{{ user.permission_level === 1 ? 'user' : 'admin' }}</td>
+                <td v-else>
+                  {{ user.permission_level === 1 ? 'user' : 'admin' }}
+                </td>
 
                 <td>
                   <button v-if="editingIndex === index" @click="saveUser(index)">
@@ -45,8 +46,8 @@
                 </td>
               </tr>
             </tbody>
-          </table>
 
+          </table>
         </div>
       </div>
     </template>
@@ -67,7 +68,7 @@ const route = useRoute();
 
 const users = ref([]);
 const editingIndex = ref(null);
-const editUserData = ref({ username: "", email: "" });
+const editUserData = ref({ username: "", permission_level: 1 });
 
 const api = {
   get_user_info: API_ENDPOINTS.get_user_info,
@@ -98,17 +99,20 @@ const fetchUsers = async () => {
 
 const editUser = (index) => {
   editingIndex.value = index;
-  editUserData.value = { ...users.value[index] };
+  editUserData.value = {
+    username: users.value[index].username,
+    permission_level: users.value[index].permission_level,
+  };
 };
 
 let url2 = api.edit_user_info;
 const saveUser = async (index) => {
   if (editingIndex.value !== null) {
-    users.value[index] = { ...editUserData.value };
+    users.value[index].permission_level = editUserData.value.permission_level;
 
     const formData = new FormData();
     formData.append("username", users.value[index].username);
-    formData.append("email", users.value[index].email);
+    formData.append("permission_level", users.value[index].permission_level);
 
     try {
       const response = await fetch(url2, {
@@ -122,15 +126,19 @@ const saveUser = async (index) => {
       const result = await response.json();
       if (result.code === 0) {
         editingIndex.value = null;
-        alert("User information has been updated!");
+        alert("User role has been updated!");
+        fetchUsers(); // 🔁刷新用户列表
       } else {
+        alert("Update failed: " + result.message);
         console.error("Edit failed", result.message);
       }
     } catch (error) {
+      alert("Network error while updating user");
       console.error("Request failed", error);
     }
   }
 };
+
 
 let url3 = api.delete_user;
 const deleteUser = async (index) => {
@@ -141,7 +149,9 @@ const deleteUser = async (index) => {
       editUserData.value = {};
     }
 
-    const urlEncodedParams = new URLSearchParams(Object.entries(users.value[index]));
+    const urlEncodedParams = new URLSearchParams({
+      username: users.value[index].username,
+    });
 
     try {
       const response = await fetch(url3, {
@@ -158,7 +168,7 @@ const deleteUser = async (index) => {
         editingIndex.value = null;
         fetchUsers();
       } else {
-        console.error("Edit failed", result.message);
+        console.error("Delete failed", result.message);
       }
     } catch (error) {
       console.error("Request failed", error);
@@ -181,6 +191,7 @@ onMounted(() => {
   }
 });
 </script>
+
 
 <style scoped>
 .main-content h2 {
@@ -241,6 +252,10 @@ body {
   text-align: center;
 }
 
+.user-table thead th {
+  text-align: center !important;
+}
+
 .user-table th,
 .user-table td {
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -268,6 +283,37 @@ body {
   margin-left: 5px;
   margin-right: 5px;
   font-size: 14px;
+}
+
+.user-table select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background-color: rgba(106, 109, 155, 0.2);
+  color: #ffffff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='10' viewBox='0 0 24 24' width='10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.user-table select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: none;
+}
+
+
+.user-table option {
+  background-color: rgba(106, 109, 155, 0.5);
+  /* 新的下拉菜单背景 */
+  color: #fff;
 }
 
 
