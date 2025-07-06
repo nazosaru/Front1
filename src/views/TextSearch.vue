@@ -127,6 +127,7 @@ const userInput2 = ref("");
 const showModal = ref(false);
 const currentImage = ref("");
 let isReResponce = ref(false);
+const lastSubmittedText = ref(""); // 保存上次提交的文本
 const chatHistory = ref(null);
 
 const currentTheme = ref("Snowfall");
@@ -177,6 +178,7 @@ const removeHistory = (index) => {
 const sendMessage = async () => {
   if (userInput.value.trim()) {
     const currentTime = new Date().toLocaleTimeString();
+    lastSubmittedText.value = userInput.value; // 保存提交内容
 
     uiChange.value = 1;
     messages.value = [];
@@ -199,6 +201,7 @@ const sendMessageIndex = async (index) => {
   userInput2.value = question.value[index];
   if (userInput2.value.trim()) {
     const currentTime = new Date().toLocaleTimeString();
+    lastSubmittedText.value = userInput2.value; // 保存提交内容
 
     messages.value.push({
       text: userInput2.value,
@@ -337,9 +340,8 @@ const retryResponse = async () => {
   messages.value.splice(messages.value.length - 1, 1);
   messages.value[0].loading = true;
 
-  if (messages.value.length > 0) {
-    const userQuestion = messages.value[messages.value.length - 1].text;
-    await sendToBackend(userQuestion);
+  if (lastSubmittedText.value) {
+    await sendToBackend(lastSubmittedText.value);
   }
 };
 

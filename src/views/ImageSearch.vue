@@ -56,7 +56,7 @@
                   v-if="message.isResponse && !message.fromHistory"
                   class="response"
                 >
-                  <button v-if="!isLoading" @click="retryResponse(index)">
+                  <button v-if="!isLoading" @click="handleRetry(index)">
                     Retry
                   </button>
                   <button v-if="!isLoading" @click="copyResponse(index)">
@@ -73,7 +73,13 @@
                 @change="onFileChange"
                 ref="fileInput"
               />
-              <button @click="sendImage">➤</button>
+              <input
+                type="text"
+                v-model="description"
+                placeholder="输入图片描述(可选)"
+                class="description-input"
+              />
+              <button @click="handleSend">➤</button>
             </div>
           </div>
         </div>
@@ -170,6 +176,9 @@ watch(messages, async () => {
 
 // 存储上传的文件
 const selectedFile = ref(null);
+const lastSelectedFile = ref(null);
+const description = ref("");
+const lastDescription = ref("");
 
 // 处理文件改变事件
 const onFileChange = (event) => {
@@ -233,6 +242,12 @@ const uploadImageFromList = async (index) => {
     const formData = new FormData();
     formData.append("username", getUsername());
     formData.append("image_file", selectedFile.value);
+    if (description.value) {
+      formData.append("description", description.value);
+    }
+    if (description.value) {
+      formData.append("description", description.value);
+    }
 
     const token = localStorage.getItem("jwtToken");
 
@@ -282,34 +297,56 @@ const uploadImageFromList = async (index) => {
   }
 };
 
-const sendImage = async (isRetry = false, index = -1) => {
+const handleSend = async () => {
   if (!selectedFile.value) {
-    alert("Please choose an image file！");
+    alert("请选择图片文件！");
     return;
   }
-  let currentTime = new Date().toLocaleTimeString();
 
+  // 保存当前状态用于重试
+  lastSelectedFile.value = selectedFile.value;
+  lastDescription.value = description.value;
+
+  await sendImage(selectedFile.value, description.value);
+};
+
+const handleRetry = async (index) => {
+  if (!lastSelectedFile.value) {
+    alert("没有可重试的记录！");
+    return;
+  }
+
+  await sendImage(lastSelectedFile.value, lastDescription.value);
+};
+
+const sendImage = async (fileToSend, descToSend) => {
+  if (!fileToSend) {
+    alert("图片文件无效！");
+    return;
+  }
+
+  const currentTime = new Date().toLocaleTimeString();
   uiChange.value = 1;
   messages.value = [];
 
-  const imageUrl = URL.createObjectURL(selectedFile.value);
-
+  const imageUrl = URL.createObjectURL(fileToSend);
   isLoading.value = true;
-
-  // 添加用户上传图片的消息
+  
   messages.value.push({
-    text: "The user has uploaded an image.",
+    text: descToSend || "用户上传了图片",
     time: currentTime,
     isResponse: false,
     imageUrl,
     loading: true,
   });
 
-  userInput.value = "";
-
   const formData = new FormData();
   formData.append("username", getUsername());
-  formData.append("image_file", selectedFile.value);
+  formData.append("image_file", fileToSend);
+  
+  if (descToSend) {
+    formData.append("description", descToSend);
+  }
 
   try {
     const token = localStorage.getItem("jwtToken");
@@ -329,7 +366,13 @@ const sendImage = async (isRetry = false, index = -1) => {
     });
 
     if (!response.ok) {
-      handleError(`Request failed, status code：${response.status}`);
+      if(response.status === 401) {
+        handleError("Session expired, please login again");
+        localStorage.removeItem("jwtToken");
+        router.push("/login");
+      } else {
+        handleError(`Request failed, status code：${response.status}`);
+      }
       isLoading.value = false;
       return;
     }
@@ -628,8 +671,21 @@ onMounted(() => {
   height: 10%;
 }
 
-.input-area input {
-  flex: 30;
+.input-area input[type="file"] {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  background-color: rgba(101,101,127, 0.15);
+  color: #000000;
+  height: 50px;
+  font-family: "Consolas", monospace;
+  font-size: 15px;
+}
+
+.description-input {
+  flex: 20;
   padding: 10px;
   border: none;
   border-radius: 5px;
