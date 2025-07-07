@@ -356,6 +356,24 @@ body {
   font-size: 14px;
 }
 
+.user-table select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px; 
+  background-color: rgba(106, 109, 155, 0.2);
+  color: #ffffff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='10' viewBox='0 0 24 24' width='10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  transition: border-color 0.2s ease-in-out;
+}
+
 .user-role-select {
   width: 100%;
   padding: 8px 12px;
@@ -375,6 +393,18 @@ body {
   transition: border-color 0.2s ease-in-out;
 }
 
+.user-table select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: none;
+}
+
+.user-table option {
+  background-color: rgba(106, 109, 155, 0.5);
+  /* 新的下拉菜单背景 */
+  color: #fff;
+}
+
 .user-role-select:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
@@ -385,14 +415,6 @@ body {
   background-color: rgba(106, 109, 155, 0.5);
   color: #fff;
 }
-
-
-.user-table option {
-  background-color: rgba(106, 109, 155, 0.5);
-  /* 新的下拉菜单背景 */
-  color: #fff;
-}
-
 
 .user-table button:hover {
   background-color: #0dbe83;
