@@ -16,7 +16,7 @@
 
             <!-- 筛选管理员 -->
             <div class="filter-container">
-              <select v-model="filterAdmin" @change="searchUser">
+              <select class="user-role-select" v-model="filterAdmin" @change="searchUser">
                 <option value="">All</option>
                 <option value="admin">Admin</option>
                 <option value="user">User</option>
@@ -356,10 +356,11 @@ body {
   font-size: 14px;
 }
 
-.user-table select {
+.user-role-select {
   width: 100%;
   padding: 8px 12px;
   font-size: 14px;
+  height: 35px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   background-color: rgba(106, 109, 155, 0.2);
@@ -367,17 +368,22 @@ body {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='10' viewBox='0 0 24 24' sas='10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='10' viewBox='0 0 24 24' width='10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 12px;
   transition: border-color 0.2s ease-in-out;
 }
 
-.user-table select:focus {
+.user-role-select:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
   box-shadow: none;
+}
+
+.user-role-select option {
+  background-color: rgba(106, 109, 155, 0.5);
+  color: #fff;
 }
 
 
@@ -484,6 +490,7 @@ body {
   border-radius: 5px;
   background-color: rgba(106, 109, 155, 0.2);
   color: #ffffff;
+  min-width: 80px;
 }
 
 .search-filter-row {
