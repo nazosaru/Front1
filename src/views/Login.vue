@@ -359,6 +359,7 @@ const handleSuccessResponse = (response, params) => {
       console.log("✅ 登录成功，用户名：", params.username);
       // 存储 JWT 令牌
       localStorage.setItem("jwtToken", response.access_token);
+      localStorage.setItem("user_id", response.data.id);
       // alert("Operation successful");
       if (response.data.permission_level === 1) {
         router.push("/framework");
