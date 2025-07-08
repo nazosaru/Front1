@@ -53,7 +53,7 @@
                   <p>{{ message.text }}</p>
                   <div class="image-container">
                     <img v-for="(imageUrl, index) in message.imageurls" :key="index" :src="imageUrl" alt="image"
-                      class="response-image" @click="enlargeImage(imageUrl)" />
+                         class="response-image" @click="enlargeImage(imageUrl)" />
                   </div>
                   <div v-if="message.loading" class="loading-icon">
                     <i class="fa-solid fa-spinner fa-spin"></i>
@@ -79,12 +79,12 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, nextTick, computed } from "vue";
-import { useRouter } from "vue-router";
+import {ref, watch, onMounted, nextTick, computed} from "vue";
+import {useRouter} from "vue-router";
 import Snowfall from "../components/Snowfall.vue";
-import { getUsername } from "../utils/Auth";
+import {getUsername} from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
-import { API_ENDPOINTS } from "../config/apiConfig";
+import {API_ENDPOINTS} from "../config/apiConfig";
 
 const router = useRouter();
 
@@ -127,6 +127,7 @@ const userInput2 = ref("");
 const showModal = ref(false);
 const currentImage = ref("");
 let isReResponce = ref(false);
+const lastSubmittedText = ref(""); // 保存上次提交的文本
 const chatHistory = ref(null);
 
 const currentTheme = ref("Snowfall");
@@ -177,6 +178,7 @@ const removeHistory = (index) => {
 const sendMessage = async () => {
   if (userInput.value.trim()) {
     const currentTime = new Date().toLocaleTimeString();
+    lastSubmittedText.value = userInput.value; // 保存提交内容
 
     uiChange.value = 1;
     messages.value = [];
@@ -199,6 +201,7 @@ const sendMessageIndex = async (index) => {
   userInput2.value = question.value[index];
   if (userInput2.value.trim()) {
     const currentTime = new Date().toLocaleTimeString();
+    lastSubmittedText.value = userInput2.value; // 保存提交内容
 
     messages.value.push({
       text: userInput2.value,
@@ -275,7 +278,7 @@ const sendToBackend = async (inputText) => {
       });
     } else {
       handleError(
-        "Backend returned an error: " + (result.message || "Unknown error")
+          "Backend returned an error: " + (result.message || "Unknown error")
       );
     }
   } catch (error) {
@@ -324,7 +327,7 @@ const fetchHistory = async (id) => {
       });
     } else {
       handleError(
-        "Failed to fetch history record: " + (result.message || "Unknown error")
+          "Failed to fetch history record: " + (result.message || "Unknown error")
       );
     }
   } catch (error) {
@@ -337,9 +340,8 @@ const retryResponse = async () => {
   messages.value.splice(messages.value.length - 1, 1);
   messages.value[0].loading = true;
 
-  if (messages.value.length > 0) {
-    const userQuestion = messages.value[messages.value.length - 1].text;
-    await sendToBackend(userQuestion);
+  if (lastSubmittedText.value) {
+    await sendToBackend(lastSubmittedText.value);
   }
 };
 
@@ -497,7 +499,7 @@ onMounted(() => {
   /* Center the element horizontally */
   font-size: 22px;
   font-weight: bold;
-  color: #4e4e4e;
+  color: #353535;
 }
 
 .icon {
@@ -509,6 +511,13 @@ onMounted(() => {
   align-items: center;
   font-size: 16px;
   color: #ffffffd0;
+  transition: all 0.3s ease; /* 添加过渡效果 */
+  cursor: pointer; /* 鼠标悬停时显示手型指针 */
+}
+
+.icon:hover {
+  color: #353535; /* 悬停时变为纯黑色 */
+  transform: translateY(-2px); /* 轻微上浮效果 */
 }
 
 .question-list {
@@ -537,7 +546,8 @@ onMounted(() => {
 }
 
 .question-button:hover {
-  background-color: #8aadb8;
+  transform: scale(1.05);  /* 放大5% */
+  transition: transform 0.2s ease;  /* 添加平滑过渡效果 */
 }
 
 .chat-history {

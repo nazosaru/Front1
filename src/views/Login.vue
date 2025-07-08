@@ -497,8 +497,8 @@ const handleResetPassword = async (params) => {
 
 .login-register {
   padding: 25px;
-  background-color: rgba(26, 28, 45, 0.35);
-  border: 1px solid rgba(202, 202, 208, 0.35);
+  background-color: rgba(51,51,51, 0.35);
+  border: 1px solid rgba(202, 202, 208, 0.15);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   border-radius: 20px;
 }
@@ -527,6 +527,12 @@ const handleResetPassword = async (params) => {
 
 .rememberme-panel {
   width: 100%;
+
+  /* 仅修改未选中时的文字颜色 */
+  :deep(.el-checkbox:not(.is-checked) .el-checkbox__label) {
+    color: #191919;
+  }
+
 }
 
 .no-account {

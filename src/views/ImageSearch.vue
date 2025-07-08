@@ -16,25 +16,25 @@
                 </div>
                 <div class="image-list">
                   <img
-                    :src="images[0 + 2 * questionSelection]"
-                    alt="Gallery Image"
-                    class="image-class"
-                    @click="uploadImageFromList(0 + 2 * questionSelection)"
+                      :src="images[0 + 2 * questionSelection]"
+                      alt="Gallery Image"
+                      class="image-class"
+                      @click="uploadImageFromList(0 + 2 * questionSelection)"
                   />
                   <img
-                    :src="images[1 + 2 * questionSelection]"
-                    alt="Gallery Image"
-                    class="image-class"
-                    @click="uploadImageFromList(1 + 2 * questionSelection)"
+                      :src="images[1 + 2 * questionSelection]"
+                      alt="Gallery Image"
+                      class="image-class"
+                      @click="uploadImageFromList(1 + 2 * questionSelection)"
                   />
                 </div>
               </div>
             </div>
             <div v-if="messages.length" class="chat-history" ref="chatHistory">
               <div
-                v-for="(message, index) in messages"
-                :key="index"
-                class="message"
+                  v-for="(message, index) in messages"
+                  :key="index"
+                  class="message"
               >
                 <div class="message-header">
                   <span class="message-time">{{ message.time }}</span>
@@ -42,10 +42,10 @@
                 <div class="message-content">
                   <p>{{ message.text }}</p>
                   <img
-                    v-if="!message.isResponse"
-                    :src="message.imageUrl"
-                    alt="Uploaded Image"
-                    class="uploaded-image"
+                      v-if="!message.isResponse"
+                      :src="message.imageUrl"
+                      alt="Uploaded Image"
+                      class="uploaded-image"
                   />
                   <div v-if="isLoading" class="loading-icon">
                     <i class="fa-solid fa-spinner fa-spin"></i>
@@ -53,10 +53,10 @@
                 </div>
 
                 <div
-                  v-if="message.isResponse && !message.fromHistory"
-                  class="response"
+                    v-if="message.isResponse && !message.fromHistory"
+                    class="response"
                 >
-                  <button v-if="!isLoading" @click="retryResponse(index)">
+                  <button v-if="!isLoading" @click="handleRetry(index)">
                     Retry
                   </button>
                   <button v-if="!isLoading" @click="copyResponse(index)">
@@ -68,12 +68,18 @@
 
             <div class="input-area">
               <input
-                type="file"
-                accept="image/*"
-                @change="onFileChange"
-                ref="fileInput"
+                  type="file"
+                  accept="image/*"
+                  @change="onFileChange"
+                  ref="fileInput"
               />
-              <button @click="sendImage">➤</button>
+              <input
+                  type="text"
+                  v-model="description"
+                  placeholder="输入图片描述(可选)"
+                  class="description-input"
+              />
+              <button @click="handleSend">➤</button>
             </div>
           </div>
         </div>
@@ -147,7 +153,7 @@ const chatHistory = ref(null);
 const currentTheme = ref("Snowfall");
 
 const currentThemeComponent = computed(() => {
-      return Snowfall;
+  return Snowfall;
 });
 
 const changeSelection = () => {
@@ -170,6 +176,9 @@ watch(messages, async () => {
 
 // 存储上传的文件
 const selectedFile = ref(null);
+const lastSelectedFile = ref(null);
+const description = ref("");
+const lastDescription = ref("");
 
 // 处理文件改变事件
 const onFileChange = (event) => {
@@ -233,6 +242,12 @@ const uploadImageFromList = async (index) => {
     const formData = new FormData();
     formData.append("username", getUsername());
     formData.append("image_file", selectedFile.value);
+    if (description.value) {
+      formData.append("description", description.value);
+    }
+    if (description.value) {
+      formData.append("description", description.value);
+    }
 
     const token = localStorage.getItem("jwtToken");
 
@@ -282,34 +297,56 @@ const uploadImageFromList = async (index) => {
   }
 };
 
-const sendImage = async (isRetry = false, index = -1) => {
+const handleSend = async () => {
   if (!selectedFile.value) {
-    alert("Please choose an image file！");
+    alert("请选择图片文件！");
     return;
   }
-  let currentTime = new Date().toLocaleTimeString();
 
+  // 保存当前状态用于重试
+  lastSelectedFile.value = selectedFile.value;
+  lastDescription.value = description.value;
+
+  await sendImage(selectedFile.value, description.value);
+};
+
+const handleRetry = async (index) => {
+  if (!lastSelectedFile.value) {
+    alert("没有可重试的记录！");
+    return;
+  }
+
+  await sendImage(lastSelectedFile.value, lastDescription.value);
+};
+
+const sendImage = async (fileToSend, descToSend) => {
+  if (!fileToSend) {
+    alert("图片文件无效！");
+    return;
+  }
+
+  const currentTime = new Date().toLocaleTimeString();
   uiChange.value = 1;
   messages.value = [];
 
-  const imageUrl = URL.createObjectURL(selectedFile.value);
-
+  const imageUrl = URL.createObjectURL(fileToSend);
   isLoading.value = true;
 
-  // 添加用户上传图片的消息
   messages.value.push({
-    text: "The user has uploaded an image.",
+    text: descToSend || "用户上传了图片",
     time: currentTime,
     isResponse: false,
     imageUrl,
     loading: true,
   });
 
-  userInput.value = "";
-
   const formData = new FormData();
   formData.append("username", getUsername());
-  formData.append("image_file", selectedFile.value);
+  formData.append("image_file", fileToSend);
+
+  if (descToSend) {
+    formData.append("description", descToSend);
+  }
 
   try {
     const token = localStorage.getItem("jwtToken");
@@ -329,7 +366,13 @@ const sendImage = async (isRetry = false, index = -1) => {
     });
 
     if (!response.ok) {
-      handleError(`Request failed, status code：${response.status}`);
+      if (response.status === 401) {
+        handleError("Session expired, please login again");
+        localStorage.removeItem("jwtToken");
+        router.push("/login");
+      } else {
+        handleError(`Request failed, status code：${response.status}`);
+      }
       isLoading.value = false;
       return;
     }
@@ -338,7 +381,7 @@ const sendImage = async (isRetry = false, index = -1) => {
     console.log(result);
 
     const responseTime = new Date().toLocaleTimeString();
-    
+
     // 直接使用caption字段内容
     messages.value.push({
       text: result.caption || "This is the response provided by the system",
@@ -400,10 +443,10 @@ const fetchHistory = async (id) => {
 
       // 提取并格式化内容为字符串，中间用换行符隔开
       const responseText = contentMatches
-        ? contentMatches
-            .map((match) => match.replace("Content: ", "").trim())
-            .join("\n")
-        : "This is the response provided by the system.";
+          ? contentMatches
+              .map((match) => match.replace("Content: ", "").trim())
+              .join("\n")
+          : "This is the response provided by the system.";
 
       messages.value.push({
         time: result.data.date,
@@ -413,7 +456,7 @@ const fetchHistory = async (id) => {
       });
     } else {
       handleError(
-        "Failed to retrieve history records" +
+          "Failed to retrieve history records" +
           (result.message || "Unknown error")
       );
     }
@@ -446,13 +489,13 @@ const retryResponse = async (index) => {
 const copyResponse = (index) => {
   const textToCopy = messages.value[index].text;
   navigator.clipboard
-    .writeText(textToCopy)
-    .then(() => {
-      alert("The response has been copied to the clipboard.");
-    })
-    .catch(() => {
-      alert("Copy failed, please try again.");
-    });
+      .writeText(textToCopy)
+      .then(() => {
+        alert("The response has been copied to the clipboard.");
+      })
+      .catch(() => {
+        alert("Copy failed, please try again.");
+      });
 };
 
 onMounted(() => {
@@ -521,7 +564,7 @@ onMounted(() => {
   transform: translateX(-50%); /* Center the element horizontally */
   font-size: 22px;
   font-weight: bold;
-  color: #4e4e4e;
+  color: #353535;
 }
 
 .icon {
@@ -533,6 +576,13 @@ onMounted(() => {
   align-items: center;
   font-size: 16px;
   color: #ffffffd0;
+  transition: all 0.3s ease; /* 添加过渡效果 */
+  cursor: pointer; /* 鼠标悬停时显示手型指针 */
+}
+
+.icon:hover {
+  color: #353535; /* 悬停时变为纯黑色 */
+  transform: translateY(-2px); /* 轻微上浮效果 */
 }
 
 .image-list {
@@ -547,6 +597,14 @@ onMounted(() => {
   height: 224px;
   width: 224px;
   border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 更柔和的阴影 */
+  transition: all 0.2s ease; /* 统一过渡效果 */
+}
+
+.image-class:hover {
+  transform: scale(1.05); /* 悬停时放大5% */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18); /* 悬停时阴影略微增强 */
+
 }
 
 .chat-history {
@@ -628,13 +686,26 @@ onMounted(() => {
   height: 10%;
 }
 
-.input-area input {
-  flex: 30;
+.input-area input[type="file"] {
+  flex: 1;
   padding: 10px;
   border: none;
   border-radius: 5px;
   margin-right: 10px;
-  background-color: rgba(101,101,127, 0.15);
+  background-color: rgba(101, 101, 127, 0.15);
+  color: #000000;
+  height: 50px;
+  font-family: "Consolas", monospace;
+  font-size: 15px;
+}
+
+.description-input {
+  flex: 20;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  background-color: rgba(101, 101, 127, 0.15);
   color: #000000;
   height: 50px;
   font-family: "Consolas", monospace;
@@ -644,7 +715,7 @@ onMounted(() => {
 .input-area button {
   flex: 1;
   padding: 10px;
-  background-color: rgba(101,101,127, 0.7);
+  background-color: rgba(101, 101, 127, 0.7);
   color: white;
   border: none;
   border-radius: 5px;
