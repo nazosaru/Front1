@@ -3,52 +3,6 @@
   <Dashboard>
     <template #left-content>
 
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Profile Page</title>
-
-        <link rel="stylesheet" href="style.css" />
-
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
-      </head>
-
-      <body>
-        <!-- <div class="navbar-top">
-          <div class="title">
-            <h1>Profile</h1>
-          </div>
-
-          <ul>
-            <li @mouseover="showForm('form1Vision')" @mouseleave="startHideTimer('form1Vision')">
-              <a href="#message">
-                <i class="fa fa-envelope fa-2x"></i>
-              </a>
-              <div class="form1Vision">
-                <Official :isVisible="isForm1Visible"></Official>
-              </div>
-            </li>
-            <li @mouseover="showForm('form2Vision')" @mouseleave="startHideTimer('form2Vision')">
-              <a href="#notification">
-                <i class="fa fa-bell fa-2x"> </i>
-              </a>
-              <div class="form2Vision">
-                <Activity :isVisible="isForm2Visible"></Activity>
-              </div>
-            </li>
-            <li @mouseover="showForm('form3Vision')" @mouseleave="startHideTimer('form3Vision')">
-              <a href="#edit">
-                <i class="fa fa-pen fa-2x"> </i>
-              </a>
-              <div class="form3Vision">
-                <PersonContent :isVisible="isForm3Visible" @hide="hideForm" @toggleForm="handleToggleForm"
-                  @answer="handleAnswer" @feedBack="handleFeedBack" @pay="handlePay" @delete="handleDelete"
-                  @personalization="handlePersonalization"></PersonContent>
-              </div>
-            </li>
-          </ul>
-        </div> -->
-
         <div class="main">
           <h2>About us</h2>
 
@@ -69,7 +23,7 @@
           </div>
 
         </div>
-      </body>
+
     </template>
   </Dashboard>
   <Edit :isVisible="isEditVisible" @update:isVisible="isEditVisible = $event" />
@@ -85,9 +39,6 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { getUsername } from "@/utils/Auth.js";
-import PersonContent from "../components/PersonContent.vue";
-import Activity from "../components/Activity.vue";
-import Official from "../components/Official.vue";
 import Edit from "../components/Edit.vue";
 import FeedBack from "../components/FeedBack.vue";
 import Pay from "../components/Pay.vue";
@@ -219,7 +170,6 @@ onMounted(() => {
 
 body {
   /* 设置字体和布局 */
-  font-family: Arial;
   overflow: hidden;
   min-height: 100%;
   display: flex;
