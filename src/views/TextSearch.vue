@@ -65,10 +65,14 @@
                 </div>
               </div>
             </div>
-
+    
             <!-- Input Box -->
             <div class="input-area">
-              <input type="text" v-model="userInput" placeholder="Please enter text..." @keyup.enter="sendMessage" />
+              <label>
+                <input type="checkbox" v-model="useLargeModel" />
+                Use Large Model
+              </label>
+              <input type="text" v-model="userInput" placeholder="Please Enter in English if you choose not to use a large model" @keyup.enter="sendMessage" />
               <button @click="sendMessage">➤</button>
             </div>
           </div>
@@ -131,7 +135,7 @@ const lastSubmittedText = ref(""); // 保存上次提交的文本
 const chatHistory = ref(null);
 
 const currentTheme = ref("Snowfall");
-
+const useLargeModel = ref(false)
 const currentThemeComponent = computed(() => {
   return Snowfall;
 });
@@ -219,8 +223,10 @@ const sendMessageIndex = async (index) => {
 // Send request to backend
 const sendToBackend = async (inputText) => {
   const formData = new FormData();
-  formData.append("username", getUsername());
+  // formData.append("username", getUsername());
   formData.append("keywords", inputText);
+  formData.append('choice', useLargeModel.value ? '1' : '0')
+
 
   try {
     const token = localStorage.getItem("jwtToken");
