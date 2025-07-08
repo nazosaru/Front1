@@ -20,6 +20,7 @@ export const API_ENDPOINTS = {
 
   record: `${API_BASE_URL}/search_history/record`, /* 记录检索历史 */
   list: `${API_BASE_URL}/search_history/list`, /* 获取用户检索历史一组对话 */
+  listAll: `${API_BASE_URL}/search_history/list_all`, /* 获取用户所有检索历史 */
 
   delete_user: `${API_BASE_URL}/admin/delete_user`, /* 管理员删除用户账号 */
   edit_user_info: `${API_BASE_URL}/admin/edit_user_info`, /* 管理员更改用户信息 */
@@ -29,5 +30,7 @@ export const API_ENDPOINTS = {
   set_setting:`${API_BASE_URL}/admin/set_setting`,      /* 更改管理员备份设置 */
   get_record: `${API_BASE_URL}/admin/get_record`,       /* 获取管理员备份记录 */
   create_backup:`${API_BASE_URL}/admin/create_backup`,  /* 管理员进行备份 */
+
+  wordcloud: `${API_BASE_URL}/wordcloud`,   /* 获取词云数据 */
 
 };

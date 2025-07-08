@@ -13,7 +13,7 @@
         <div v-if="opType == 1">
           <el-form-item prop="username" class="form-item">
             <el-input size="large" clearable placeholder="Please enter your username" v-model="formData.username"
-              maxlength="20">
+                      maxlength="20">
               <template #prefix>
                 <span class="iconfont icon-account"></span>
               </template>
@@ -22,7 +22,7 @@
 
           <el-form-item prop="password" class="form-item">
             <el-input type="password" size="large" placeholder="Please enter your password" v-model="formData.password"
-              show-password>
+                      show-password>
               <template #prefix>
                 <span class="iconfont icon-password"></span>
               </template>
@@ -52,12 +52,12 @@
 
           <el-form-item prop="registerPassword" class="form-item">
             <el-input type="password" size="large" placeholder="Please enter your password"
-              v-model="formData.registerPassword" show-password />
+                      v-model="formData.registerPassword" show-password />
           </el-form-item>
 
           <el-form-item prop="reRegisterPassword" class="form-item">
             <el-input type="password" size="large" placeholder="Please re-enter your password"
-              v-model="formData.reRegisterPassword" show-password />
+                      v-model="formData.reRegisterPassword" show-password />
           </el-form-item>
         </div>
 
@@ -86,12 +86,12 @@
 
           <el-form-item prop="registerPassword" class="form-item">
             <el-input type="password" placeholder="Please enter your new password" v-model="formData.registerPassword"
-              show-password />
+                      show-password />
           </el-form-item>
 
           <el-form-item prop="reRegisterPassword" class="form-item">
             <el-input type="password" placeholder="Please confirm your new password"
-              v-model="formData.reRegisterPassword" show-password />
+                      v-model="formData.reRegisterPassword" show-password />
           </el-form-item>
         </div>
 
@@ -193,7 +193,7 @@ const rules = {
     {
       validator: proxy.Verify.password,
       message:
-        "Password can only be numbers, letters, special characters, 8-18 characters",
+          "Password can only be numbers, letters, special characters, 8-18 characters",
     },
     { required: true, message: "Please re-enter your password" },
     {
@@ -260,7 +260,7 @@ const DEV_CREDENTIALS = {
 };
 
 const DEV_ADMIN_CREDENTIALS = {
-  username: 'admin', 
+  username: 'admin',
   password: 'admin123'
 };
 
@@ -268,8 +268,8 @@ const DEV_ADMIN_CREDENTIALS = {
 const handleRegisterOrLogin = async (params) => {
   // 开发模式下管理员快捷登录
   if (isDevMode &&
-    params.username === DEV_ADMIN_CREDENTIALS.username &&
-    params.password === DEV_ADMIN_CREDENTIALS.password) {
+      params.username === DEV_ADMIN_CREDENTIALS.username &&
+      params.password === DEV_ADMIN_CREDENTIALS.password) {
     localStorage.setItem('isAdmin', 'true');
     saveUsername(params.username);
     router.push('/userManagement');
@@ -287,7 +287,7 @@ const handleRegisterOrLogin = async (params) => {
     // 开发模式本地验证
     if (isDevMode && opType.value === 1) {
       if (params.username === DEV_CREDENTIALS.username &&
-        params.password === await sha256WithSalt(DEV_CREDENTIALS.password)) {
+          params.password === await sha256WithSalt(DEV_CREDENTIALS.password)) {
         localStorage.setItem("jwtToken", "dev_token");
         userStore.setUsername(params.username);
         saveUsername(params.username);
@@ -359,6 +359,7 @@ const handleSuccessResponse = (response, params) => {
       console.log("✅ 登录成功，用户名：", params.username);
       // 存储 JWT 令牌
       localStorage.setItem("jwtToken", response.access_token);
+      localStorage.setItem("user_id", response.data.id);
       // alert("Operation successful");
       if (response.data.permission_level === 1) {
         router.push("/framework");
@@ -497,8 +498,8 @@ const handleResetPassword = async (params) => {
 
 .login-register {
   padding: 25px;
-  background-color: rgba(51,51,51, 0.35);
-  border: 1px solid rgba(202, 202, 208, 0.15);
+  background-color: rgba(26, 28, 45, 0.35);
+  border: 1px solid rgba(202, 202, 208, 0.35);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   border-radius: 20px;
 }
@@ -532,7 +533,6 @@ const handleResetPassword = async (params) => {
   :deep(.el-checkbox:not(.is-checked) .el-checkbox__label) {
     color: #191919;
   }
-
 }
 
 .no-account {
