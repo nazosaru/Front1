@@ -6,13 +6,17 @@
     <!-- 内容层 -->
     <div class="content-wrapper">
       <div class="content">
-        <h2 class="title">Intelligent Retrieval System</h2>
-        <p class="description">
-          Our advanced platform leverages cutting-edge multimodal AI
-          to deliver precise image-text matching. By combining deep
-          learning architectures with semantic analysis, we enable
-          highly accurate cross-modal search capabilities.
-        </p>
+        <div class="title-box">
+          <h2 class="title">Intelligent Retrieval System</h2>
+        </div>
+        <div class="description-box">
+          <p class="description">
+            Our advanced platform leverages cutting-edge multimodal AI
+            to deliver precise image-text matching. By combining deep
+            learning architectures with semantic analysis, we enable
+            highly accurate cross-modal search capabilities.
+          </p>
+        </div>
       </div>
     </div>
   </main>
@@ -80,6 +84,24 @@ main {
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
   padding: 1rem;
   text-align: left;
+
+
+  /*
+  .title-box {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+  }
+
+
+  .description-box {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 4px;
+  }
+  */
+
 
   /* 标题样式 */
   & .title {

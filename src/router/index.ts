@@ -6,7 +6,7 @@ import imageSearch from '../views/ImageSearch.vue'
 import others from '../views/Others.vue'
 import userManagement from '../views/AdminOperations/UserManagement.vue'
 import systemManagement from '../views/AdminOperations/SystemManagement.vue'
-import profile from "../views/Profile.vue"
+import contact from "../views/Contact.vue"
 import history from "../views/History.vue" // 1. 导入新的History组件
 
 const isDevMode = import.meta.env.MODE === 'development';
@@ -65,9 +65,9 @@ const router = createRouter({
       }
     },
     {
-      path:"/profile",
-      name:"profile",
-      component:profile
+      path:"/contact",
+      name:"contact",
+      component:contact
     },
     // 3. 添加新的history路由
     {

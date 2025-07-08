@@ -1,152 +1,102 @@
 <template>
   <div v-if="isVisible" class="edit-overlay">
-    <div class="edit-content" @click="stop">
-      <!-- 头部 -->
+    <div class="edit-content" @click.stop>
+      <!-- Header -->
       <div class="edit-header">
-        <h2>Modification</h2>
+        <h2>Account Settings</h2>
         <button class="close-button" @click="close">×</button>
       </div>
 
-      <!-- 表单内容 -->
+      <!-- Form content -->
       <div class="edit-body">
         <form class="form">
-          <!-- 昵称 -->
+          <!-- Email -->
           <div class="form-group">
-            <label for="nickname">Nickname</label>
-            <input
-              type="text"
-              id="nickname"
-              placeholder="Please edit your nickname"
-              v-model="form.nickname"
-            />
-          </div>
-
-          <!-- 邮箱 -->
-          <div class="form-group" prop="email">
             <label for="email">Email</label>
             <input
-              type="email"
-              id="email"
-              placeholder="Please edit your email"
-              v-model="form.email"
-              clearable
-              maxLength="150"
+                type="email"
+                id="email"
+                placeholder="Enter your new email"
+                v-model="form.email"
+                maxLength="150"
             />
           </div>
 
-          <!-- 新密码 -->
-          <div class="form-group" prop="password">
-            <label for="password">Password</label>
+          <!-- New Password -->
+          <div class="form-group">
+            <label for="password">New Password</label>
             <input
-              type="password"
-              id="password"
-              placeholder="Please enter your new password"
-              v-model="form.password"
+                type="password"
+                id="password"
+                placeholder="Enter your new password"
+                v-model="form.password"
             />
           </div>
 
-          <!-- 确认新密码 -->
-          <div class="form-group" prop="rePassword">
+          <!-- Confirm Password -->
+          <div class="form-group">
             <label for="rePassword">Confirm Password</label>
             <input
-              type="password"
-              id="rePassword"
-              placeholder="Please confirm your new password"
-              v-model="form.rePassword"
+                type="password"
+                id="rePassword"
+                placeholder="Confirm your new password"
+                v-model="form.rePassword"
             />
           </div>
 
-          <!-- 用户头像 -->
+          <!-- Avatar Upload -->
           <div class="form-group">
-            <label>Avatar</label>
+            <label>Profile Picture</label>
             <div class="avatar-upload">
               <input
-                type="file"
-                id="avatar"
-                @change="handleFileChange"
-                accept="image/*"
+                  type="file"
+                  id="avatar"
+                  @change="handleFileChange"
+                  accept="image/*"
               />
               <img
-                v-if="avatarPreview"
-                :src="avatarPreview"
-                alt="Avatar"
-                class="avatar"
+                  v-if="avatarPreview"
+                  :src="avatarPreview"
+                  alt="Avatar Preview"
+                  class="avatar"
               />
             </div>
-          </div>
-
-          <!-- 生日 -->
-          <div class="form-group">
-            <label for="birthday">Birthday</label>
-            <input type="date" id="birthday" v-model="form.birthday" />
-          </div>
-
-          <!-- 性别选择 -->
-          <div class="form-group">
-            <label>Gender</label>
-            <div class="gender-options">
-              <div class="gender-option">
-                <label class="gender-option-label">Male</label>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="male"
-                  v-model="selectedGender"
-                  class="gender-option-input"
-                />
-              </div>
-              <div class="gender-option">
-                <label class="gender-option-label">Female</label>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="female"
-                  v-model="selectedGender"
-                  class="gender-option-input"
-                />
-              </div>
-              <div class="gender-option">
-                <label class="gender-option-label">Secret</label>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="secret"
-                  v-model="selectedGender"
-                  class="gender-option-input"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 个人简介 -->
-          <div class="form-group">
-            <label for="bio">Personal Introduction</label>
-            <textarea
-              id="bio"
-              placeholder="Please edit your personal introduction"
-              v-model="form.description"
-            ></textarea>
           </div>
         </form>
       </div>
 
-      <!-- 底部按钮 -->
+      <!-- Footer buttons -->
       <div class="edit-footer">
-        <button class="cancel-button" @click="close">Close</button>
-        <button class="confirm-button" @click="submitForm">Confirm</button>
+        <button class="cancel-button" @click="close">Cancel</button>
+        <button class="confirm-button" @click="submitForm">Save Changes</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import assert from "assert";
-import { ref, reactive, getCurrentInstance, nextTick, onMounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import Verify from "../utils/verify";
+import { ref } from "vue";
 import { API_ENDPOINTS } from "../config/apiConfig";
+import { getUsername } from "../utils/Auth";
 
 const FRONTEND_SALT = 'RetrievalSystem@2023';
+const username = getUsername();
+const avatarPreview = ref(null);
+const token = localStorage.getItem("jwtToken");
+
+const props = defineProps({
+  isVisible: Boolean,
+});
+
+const initialFormState = {
+  username: username,
+  email: "",
+  password: "",
+  rePassword: "",
+  avatar: null,
+};
+
+const form = ref({ ...initialFormState });
 
 async function sha256WithSalt(message) {
   const msgBuffer = new TextEncoder().encode(message + FRONTEND_SALT);
@@ -155,139 +105,63 @@ async function sha256WithSalt(message) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-import { getUsername } from "../utils/Auth";
-const username = getUsername();
-
-const avatarPreview = ref(null);
-
-const { proxy } = getCurrentInstance();
-const router = useRouter();
-const route = useRoute();
-
-const props = defineProps({
-  isVisible: Boolean,
-});
-
-const initialFormState = {
-  username: username,
-  nickname: "",
-  email: "",
-  password: "",
-  rePassword: "",
-  birthday: "",
-  gender: "secret",
-  description: "",
-  avatar: null,
-};
-
-const form = ref({ ...initialFormState });
-
-/* 检查确认密码是否一致 */
-const checkRePassword = (rule, value, callback) => {
-  if (value !== formData.value.registerPassword) {
-    callback(new Error(rule.message));
-  } else {
-    callback();
-  }
-};
-
-const rules = {
-  email: [
-    { required: true, message: "Please modify your email address" },
-    {
-      validator: proxy.Verify.email,
-      message: "Please enter a valid email address",
-    },
-  ],
-  password: [
-    { required: true, message: "Please enter your password" },
-    {
-      validator: proxy.Verify.password,
-      message:
-        "Password can only contain numbers, letters, special characters, and should be 8-18 characters long",
-    },
-  ],
-  rePassword: [
-    { required: true, message: "Please enter your password again" },
-    {
-      validator: checkRePassword,
-      message: "The two entered passwords do not match",
-    },
-  ],
-};
-
-// 定义性别选择的数据绑定
-const selectedGender = ref("secret");
-
-const api = {
-  edit: API_ENDPOINTS.edit,
-};
-
-// 处理文件选择
+// Handle file selection for avatar
 const handleFileChange = (event) => {
   const file = event.target.files[0];
   if (file) {
-    // 设置文件预览
     const reader = new FileReader();
     reader.onload = (e) => {
       avatarPreview.value = e.target.result;
       localStorage.setItem(`avatar_${username}`, e.target.result);
     };
     reader.readAsDataURL(file);
-    form.avatar = file; // 保存文件到 form 对象
+    form.value.avatar = file;
   }
 };
 
-let url = api.edit;
+const api = {
+  edit: API_ENDPOINTS.edit,
+};
 
-const token = localStorage.getItem("jwtToken");
-// 提交表单的方法
+// Submit form data
 const submitForm = async () => {
-  // 更新 form 对象中的性别值
-  form.value.gender = selectedGender.value;
+  if (form.value.password !== form.value.rePassword) {
+    alert("Passwords do not match");
+    return;
+  }
 
-  // 使用 FormData 构造表单数据
   const formData = new FormData();
   formData.append("username", form.value.username);
-  formData.append("nickname", form.value.nickname);
   formData.append("email", form.value.email);
+
   if (form.value.password) {
     const encryptedPassword = await sha256WithSalt(form.value.password);
     formData.append("password", encryptedPassword);
   }
-  formData.append("gender", form.value.gender);
-  formData.append("description", form.value.description);
-  formData.append("birthday", form.value.birthday);
 
-  // 如果有头像上传，添加头像到 formData
-  if (form.avatar) {
-    formData.append("avatar", form.avatar);
-  }
-
-  // 如果有头像上传，添加头像到 formData
   if (form.value.avatar) {
     formData.append("avatar", form.value.avatar);
   }
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(api.edit, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: formData, // 使用 FormData 作为请求体
+      body: formData,
     });
 
     const result = await response.json();
     if (result.code === 0) {
-      alert("Modification successful");
+      alert("Changes saved successfully");
       emit("update:isVisible", false);
-      avatarPreview.value = null;
       resetForm();
     } else {
+      alert(result.message || "Failed to save changes");
     }
   } catch (error) {
-    alert("Request failed", error);
+    alert("Request failed: " + error.message);
   }
 };
 
@@ -295,15 +169,13 @@ const emit = defineEmits(["update:isVisible"]);
 
 const close = () => {
   emit("update:isVisible", false);
-  avatarPreview.value = null; // 清除图片预览
   resetForm();
 };
 
-// 重置表单函数
+// Reset form to initial state
 const resetForm = () => {
   form.value = { ...initialFormState };
-  avatarPreview.value = null; // Clear avatar preview
-  selectedGender.value = "secret"; // Reset gender selection
+  avatarPreview.value = null;
 };
 </script>
 
@@ -328,7 +200,6 @@ const resetForm = () => {
   padding: 20px 30px;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  height: 80%;
   border: 1px solid rgba(202, 202, 208, 0.35);
 }
 
@@ -354,22 +225,16 @@ const resetForm = () => {
 
 .edit-body {
   margin-bottom: 20px;
-  max-height: 85%;
-  overflow-y: scroll;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .edit-body::-webkit-scrollbar {
   display: none;
 }
 
-.form {
-
-}
-
-
 .form-group {
   margin-bottom: 15px;
-  height: 100%;
 }
 
 .form-group label {
@@ -378,8 +243,7 @@ const resetForm = () => {
   margin-bottom: 5px;
 }
 
-.form-group input,
-.form-group textarea {
+.form-group input {
   width: 100%;
   padding: 8px;
   border: 1px solid #333;
@@ -396,33 +260,10 @@ const resetForm = () => {
 }
 
 .avatar {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-}
-
-.gender-options {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.gender-option {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.gender-option-label {
-  display: flex;
-  flex: 6;
-}
-
-.gender-option-input {
-  display: flex;
-  flex: 1;
 }
 
 .edit-footer {

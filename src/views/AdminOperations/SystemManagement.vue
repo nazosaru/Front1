@@ -1,5 +1,5 @@
 <template>
-  <Starfield />
+  <Snowfall />
   <Dashboard>
     <template #left-content>
       <div class="visualization-page">
@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import Starfield from '@/components/Snowfall.vue';
+import Snowfall from '@/components/Snowfall.vue';
 import Dashboard from '@/components/DashboardAdmin.vue';
 </script>
 
