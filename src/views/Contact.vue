@@ -63,7 +63,7 @@
                 <td>GitHub Project</td>
                 <td>:</td>
                 <td>
-                  <a href="https://github.com/your-repository-link" target="_blank">
+                  <a href="https://github.com/PunchlineAAAA/ITR_back_end" target="_blank">
                     <i class="fab fa-github" style="margin-right: 8px;"></i>Find us in GitHub
                   </a>
                 </td>
