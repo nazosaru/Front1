@@ -283,6 +283,7 @@ main {
 .fa-pen-to-square.nav-icon:hover {
   color: #ffffffd0;   /* 悬停时颜色 */
   transform: scale(1.1); /* 轻微放大（可选） */
+  cursor: pointer;     /* 鼠标指针 */
 }
 
 .nav-item {
@@ -387,20 +388,6 @@ main {
 .left-content {
   padding: 10px 30px;
   color: #e5e5e5;
-}
-
-
-
-
-.formVision {
-  border: 0.1px solid #ffffff58;  /* 半透明边框 */
-  display: none;  /* 默认隐藏 */
-  background-color: #658694;  /* 背景 */
-  padding: 30px;
-  border-radius: 18px;  /* 圆角 */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* 阴影效果 */
-  position: absolute;
-  z-index: 10;  /* 确保在最上层 */
 }
 
 /* 媒体查询样式，适配不同屏幕宽度 */

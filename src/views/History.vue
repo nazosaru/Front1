@@ -270,7 +270,7 @@ const formatTime = (timeString) => {
 
 .history-header h2 {
   font-size: 1.5rem;
-  color: #4e4e4e;
+  color: #353535;
   margin: 0;
 }
 
