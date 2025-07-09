@@ -13,7 +13,7 @@
             <!-- 历史记录列表 -->
             <div class="history-list-container">
               <div class="history-item" v-for="(item, index) in history" :key="item.id"
-                @click="viewHistoryDetail(item)">
+                   @click="viewHistoryDetail(item)">
                 <div class="history-item-content">
                   <img :src="item.imageUrl" alt="History Image" class="history-thumbnail" />
                   <div class="history-info">
@@ -286,14 +286,6 @@ const formatTime = (timeString) => {
   margin: 0;
 }
 
-.history-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.action-button:hover {
-  background-color: #434653;
-}
 
 .history-list-container {
   flex: 1;
@@ -398,7 +390,7 @@ const formatTime = (timeString) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -406,10 +398,10 @@ const formatTime = (timeString) => {
 }
 
 .modal-content {
-  background-color: #1e1e2f;
+  background-color: rgba(26, 28, 45, 0.8);
   color: #e0e0e0;
   border-radius: 10px;
-  width: 80%;
+  width: 60%;
   max-width: 800px;
   max-height: 80vh;
   display: flex;
@@ -459,7 +451,7 @@ const formatTime = (timeString) => {
   width: 100%;
   padding: 15px;
   background-color: #2e2e3f;
-  color: #e6e6e6;       
+  color: #e6e6e6;
   border-radius: 5px;
   margin-bottom: 15px;
   white-space: pre-wrap;

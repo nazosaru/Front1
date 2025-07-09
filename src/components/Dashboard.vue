@@ -5,8 +5,14 @@
         <div>
           <div class="user-info">
             <img :src="avatarSrc" alt="user" />
-            <p>{{ username }}</p>
+            <div class="user-details">
+              <p>{{ username }}</p>
+              <i class="fa fa-pen-to-square nav-icon" @click="showEditForm"></i>  <!-- 编辑图标 -->
+            </div>
           </div>
+
+
+
           <ul>
             <li
               class="nav-item"
@@ -14,7 +20,7 @@
               @click="navigateTo('/framework')"
             >
               <a href="#">
-                <i class="fa fa-map nav-icon"></i>
+                <i class="fa fa-house nav-icon"></i>
                 <span class="nav-text">Home</span>
               </a>
             </li>
@@ -25,7 +31,7 @@
               @click="navigateTo('/textSearch')"
             >
               <a href="#">
-                <i class="fa fa-arrow-trend-up nav-icon"></i>
+                <i class="fa fa-image nav-icon"></i>
                 <span class="nav-text">Image</span>
               </a>
             </li>
@@ -36,7 +42,7 @@
               @click="navigateTo('/imageSearch')"
             >
               <a href="#">
-                <i class="fa fa-compact-disc nav-icon"></i>
+                <i class="fa fa-file-lines nav-icon"></i>
                 <span class="nav-text">Text</span>
               </a>
             </li>
@@ -47,7 +53,7 @@
               @click="navigateTo('/history')"
             >
               <a href="#">
-                <i class="fa fa-circle-play nav-icon"></i>
+                <i class="fas fa-clock nav-icon"></i>
                 <span class="nav-text">History</span>
               </a>
             </li>
@@ -58,12 +64,12 @@
         <ul>
           <li
             class="nav-item1"
-            :class="{ active: isActive('/profile') }"
-            @click="navigateTo('/profile')"
+            :class="{ active: isActive('/contact') }"
+            @click="navigateTo('/contact')"
           >
             <a href="#">
-              <i class="fa fa-user nav-icon"></i>
-              <span class="nav-text1">Profile</span>
+              <i class="fa fa-address-card nav-icon"></i>
+              <span class="nav-text1">Contact</span>
             </a>
           </li>
 
@@ -83,18 +89,46 @@
       </section>
     </main>
   </body>
+
+  <!-- 各种对话框组件 -->
+  <Edit :isVisible="isEditVisible" @update:isVisible="isEditVisible = $event" />
+  <Answer :isVisible="isAnswerVisible" @update:isVisible="isAnswerVisible = $event" />
+  <FeedBack :isVisible="isFeedBackVisible" @update:isVisible="isFeedBackVisible = $event" />
+  <Pay :isVisible="isPayVisible" @update:isVisible="isPayVisible = $event" />
+  <Personalization :isVisible="isPersonalizationVisible" @update:isVisible="isPersonalizationVisible = $event" />
+  <Delete :isVisible="isDeleteVisible" @update:isVisible="isDeleteVisible = $event" />
+
+
 </template>
 
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { ref, computed, onMounted } from "vue";
+import {ref, computed, onMounted, defineEmits} from "vue";
 import { getUsername, clearUsername } from "../utils/Auth";
+import Edit from "../components/Edit.vue";
+import FeedBack from "../components/FeedBack.vue";
+import Pay from "../components/Pay.vue";
+import Delete from "../components/Delete.vue";
+import Answer from "../components/Answer.vue";
+import edit from "@/components/Edit.vue";
+
+
 
 const router = useRouter();
 const route = useRoute();
 const username = getUsername();
-
 const avatarSrc = ref("public/user.svg"); // 默认头像
+
+// 定义各种对话框的显示状态
+const isForm3Visible = ref(false);  // 编辑面板
+const isEditVisible = ref(false);   // 编辑对话框
+const isAnswerVisible = ref(false); // 回答对话框
+const isFeedBackVisible = ref(false); // 反馈对话框
+const isPayVisible = ref(false);    // 支付对话框
+const isDeleteVisible = ref(false); // 删除对话框
+const isPersonalizationVisible = ref(false); // 个性化对话框
+
+
 
 onMounted(() => {
   // 从 localStorage 或其他地方获取头像文件路径
@@ -118,6 +152,33 @@ const GoToLogin = () => {
 const navigateTo = (path) => {
   router.push(path);
 };
+
+
+const showEditForm = () => {
+  isEditVisible.value = true;
+};
+
+// 其他处理函数...
+
+// 组件挂载时执行
+onMounted(() => {
+  const username = getUsername();  // 获取当前用户名
+
+  if (!username) {
+    router.push("/");  // 未登录则跳转到首页
+  } else {
+    // 从本地存储加载保存的主题
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      currentTheme.value = savedTheme;
+    }
+  }
+
+});
+
+
+
+
 </script>
 
 <style scoped>
@@ -193,9 +254,13 @@ main {
   font-family: inherit;
 }
 
+
+
+
 .user-info img {
   padding: 24px 44px 12px;
   border-radius: 50%; /* 圆形头像 */
+
 }
 
 .user-info p {
@@ -205,6 +270,35 @@ main {
   text-align: center;
   line-height: 1;
   padding: 0 6px 32px;
+}
+
+.user-details {
+  display: flex;          /* 使用 flex 布局 */
+  align-items: center;    /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  gap: 10px;              /* 元素间距 */
+  margin-top: 10px;
+  width: 100%;            /* 确保容器宽度足够 */
+}
+
+
+.user-details ul li a {
+  color: #ffffffd0;       /* 图标颜色 */
+  font-size: 1.2rem; /* 图标大小 */
+}
+
+/* 使用相对定位微调 */
+.fa-pen-to-square.nav-icon {
+  position: relative;
+  left: 5px;
+  top: -13px;
+  color: #3e3e5f;
+}
+
+/* 悬停状态 */
+.fa-pen-to-square.nav-icon:hover {
+  color: #ffffffd0;   /* 悬停时颜色 */
+  transform: scale(1.1); /* 轻微放大（可选） */
 }
 
 .nav-item {
@@ -309,6 +403,20 @@ main {
 .left-content {
   padding: 10px 30px;
   color: #e5e5e5;
+}
+
+
+
+
+.formVision {
+  border: 0.1px solid #ffffff58;  /* 半透明边框 */
+  display: none;  /* 默认隐藏 */
+  background-color: #658694;  /* 背景 */
+  padding: 30px;
+  border-radius: 18px;  /* 圆角 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* 阴影效果 */
+  position: absolute;
+  z-index: 10;  /* 确保在最上层 */
 }
 
 /* 媒体查询样式，适配不同屏幕宽度 */

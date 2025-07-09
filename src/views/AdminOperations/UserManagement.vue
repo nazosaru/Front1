@@ -1,10 +1,31 @@
 <template>
   <Snowfall />
+  <Snowfall />
   <Dashboard>
     <template #left-content>
       <div class="userManagement">
         <div class="main-content">
           <h2>User Management</h2>
+
+          <!-- 查询与筛选容器 -->
+          <div class="search-filter-row">
+            <!-- 查询功能 -->
+            <div class="search-container">
+              <i class="fa fa-search search-icon"></i>
+              <input v-model="searchQuery" @input="searchUser" placeholder="Search by username" class="search-input" />
+            </div>
+
+            <!-- 筛选管理员 -->
+            <div class="filter-container">
+              <select class="user-role-select" v-model="filterAdmin" @change="searchUser">
+                <option value="">All</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 用户表格 -->
 
           <!-- 查询与筛选容器 -->
           <div class="search-filter-row">
@@ -66,6 +87,13 @@
             <span>Page {{ currentPage }} of {{ totalPages }}</span>
             <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">Next</button>
           </div>
+
+          <!-- 分页控件 -->
+          <div class="pagination">
+            <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1">Previous</button>
+            <span>Page {{ currentPage }} of {{ totalPages }}</span>
+            <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">Next</button>
+          </div>
         </div>
       </div>
     </template>
@@ -73,9 +101,10 @@
 </template>
 
 
+
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import {ref, onMounted} from "vue";
+import {useRouter, useRoute} from "vue-router";
 import axios from "axios";
 import Snowfall from "@/components/Snowfall.vue";
 import { getUsername } from "@/utils/Auth";
@@ -102,6 +131,7 @@ let url = ref(api.get_user_info);
 const token = localStorage.getItem("jwtToken");
 
 const fetchUsers = async (page = 1, query = "", filter = "") => {
+const fetchUsers = async (page = 1, query = "", filter = "") => {
   try {
     const response = await axios.get(url.value, {
       headers: {
@@ -113,9 +143,23 @@ const fetchUsers = async (page = 1, query = "", filter = "") => {
         search: query,  // 查询条件
         filterAdmin: filter, // 筛选管理员条件
       },
+      params: {
+        page: page,  // 当前页码
+        pageSize: pageSize.value,  // 每页显示的条数
+        search: query,  // 查询条件
+        filterAdmin: filter, // 筛选管理员条件
+      },
     });
 
     if (response.data.code === 0) {
+      users.value = response.data.data.users || [];
+      const total = response.data.data.total || 0;
+      const pages = Math.ceil(total / pageSize.value);
+      totalPages.value = pages > 0 ? pages : 1;
+
+      if (currentPage.value > totalPages.value) {
+        currentPage.value = totalPages.value;
+      }
       users.value = response.data.data.users || [];
       const total = response.data.data.total || 0;
       const pages = Math.ceil(total / pageSize.value);
@@ -139,6 +183,28 @@ const editUser = (index) => {
     permission_level: users.value[index].permission_level,
   };
 };
+
+// 查询功能
+const searchUser = () => {
+  currentPage.value = 1; // 每次查询时回到第一页
+  fetchUsers(currentPage.value, searchQuery.value, filterAdmin.value); // 根据查询条件获取用户数据
+};
+
+// 分页功能
+const changePage = (newPage) => {
+  if (newPage < 1 || newPage > totalPages.value) return; // 防止无效页码
+  currentPage.value = newPage;
+  fetchUsers(currentPage.value, searchQuery.value); // 根据新页码获取用户数据
+};
+
+onMounted(() => {
+  const username = getUsername();
+  if (!username) {
+    router.push("/"); // 如果没有用户名则重定向
+  } else {
+    fetchUsers(currentPage.value, ""); // 初始化获取用户列表
+  }
+});
 
 // 查询功能
 const searchUser = () => {
@@ -291,6 +357,10 @@ body {
   /* 不再限制高度为 780px */
   overflow: hidden;
   /* 防止外溢 */
+  height: 100%;
+  /* 不再限制高度为 780px */
+  overflow: hidden;
+  /* 防止外溢 */
 }
 
 .user-table {
@@ -298,11 +368,16 @@ body {
   box-shadow: 1px 1px 8px 0 grey;
   flex: 1;
   /* 占据剩余空间 */
+  flex: 1;
+  /* 占据剩余空间 */
   margin-bottom: 20px;
   padding: 20px 25px 20px 25px;
   width: 90%;
   color: rgba(255, 255, 255, 0.8);
   overflow-y: auto;
+  /* ⚠️ 关键部分，启用垂直滚动 */
+  max-height: 600px;
+  /* 设置最大高度，防止无限撑开 */
   /* ⚠️ 关键部分，启用垂直滚动 */
   max-height: 600px;
   /* 设置最大高度，防止无限撑开 */
@@ -328,11 +403,27 @@ body {
   /* 设置最小行高 */
 }
 
+.user-table th {
+  background-color: rgba(106, 109, 155, 0.5);
+  text-align: center;
+  padding: 15px 10px;
+  /* 根据需要调整 */
+  line-height: 1.6;
+  /* 可选：提高行内内容的高度感 */
+  min-height: 50px;
+  /* 设置最小行高 */
+}
+
 .user-table td {
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 5px 10px;
   /* 减小内容行的上下 padding */
+  padding: 5px 10px;
+  /* 减小内容行的上下 padding */
   text-align: left;
+  line-height: 1.4;
+  /* 减小内容行的行高 */
+  min-height: 25px;
   line-height: 1.4;
   /* 减小内容行的行高 */
   min-height: 25px;
@@ -349,6 +440,7 @@ body {
   color: #fff;
   background-color: #0dbe83;
   width: 45%;
+  height: 36px;
   height: 36px;
   /* 设置按钮高度 */
   margin-left: 5px;
@@ -415,6 +507,16 @@ body {
   background-color: rgba(106, 109, 155, 0.5);
   color: #fff;
 }
+.user-role-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: none;
+}
+
+.user-role-select option {
+  background-color: rgba(106, 109, 155, 0.5);
+  color: #fff;
+}
 
 .user-table button:hover {
   background-color: #0dbe83;
@@ -443,6 +545,93 @@ body {
   text-align: center;
   width: 120px;
 }
+
+.search-container {
+  position: relative;
+  max-width: 200px;
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  height: 35px;
+  padding: 8px 8px 8px 36px;
+  /* 👈 左边为图标留空间 */
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(106, 109, 155, 0.2);
+  color: #fff;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination button {
+  margin: 0 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #fff;
+  background-color: #0dbe83;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+}
+
+.pagination span {
+  color: #fff;
+  font-size: 16px;
+}
+
+.filter-container {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.filter-container select {
+  padding: 8px;
+  font-size: 14px;
+  height: 35px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  background-color: rgba(106, 109, 155, 0.2);
+  color: #ffffff;
+  min-width: 80px;
+}
+
+.search-filter-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px; /* 控制间距 */
+  margin-bottom: 5px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-container,
+.filter-container {
+  flex-shrink: 0;
+}
+
 
 .search-container {
   position: relative;

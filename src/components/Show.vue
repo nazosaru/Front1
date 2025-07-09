@@ -6,13 +6,15 @@
     <!-- 内容层 -->
     <div class="content-wrapper">
       <div class="content">
-        <h2 class="title">Intelligent Retrieval System</h2>
-        <p class="description">
-          Our advanced platform leverages cutting-edge multimodal AI
-          to deliver precise image-text matching. By combining deep
-          learning architectures with semantic analysis, we enable
-          highly accurate cross-modal search capabilities.
-        </p>
+        <div class="title-box">
+          <h2 class="title">Intelligent Retrieval System</h2>
+          <p class="description">
+            Our advanced platform leverages cutting-edge multimodal AI
+            to deliver precise image-text matching. By combining deep
+            learning architectures with semantic analysis, we enable
+            highly accurate cross-modal search capabilities.
+          </p>
+        </div>
       </div>
     </div>
   </main>
@@ -78,8 +80,22 @@ main {
   font: 400 0.85rem helvetica, sans-serif;
   color: white;
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
-  padding: 1rem;
+  padding: 2rem;
   text-align: left;
+  background-color: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+  backdrop-filter: blur(5px); /* 背景模糊效果 */
+  border-radius: 15px; /* 圆角 */
+
+  /* 3D立体效果 */
+  transform-style: preserve-3d;
+  transform: perspective(500px) translateZ(20px);
+  box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.3),
+      0 15px 20px rgba(0, 0, 0, 0.2),
+      inset 0 0 15px rgba(255, 255, 255, 0.1);
+
+  /* 平滑过渡效果 */
+  transition: all 0.3s ease-out;
 
   /* 标题样式 */
   & .title {
@@ -87,12 +103,23 @@ main {
     text-transform: uppercase;
     font-size: 2rem;
     margin-bottom: 1.5rem;
+    transform: translateZ(30px); /* 增强3D效果 */
   }
 
   /* 描述文本样式 */
   & .description {
     line-height: 1.7;
     font-size: 1.2rem;
+    transform: translateZ(20px); /* 增强3D效果 */
+  }
+
+  /* 悬停效果 */
+  &:hover {
+    transform: perspective(500px) translateZ(30px) scale(1.015);
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        0 20px 30px rgba(0, 0, 0, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.15);
   }
 }
 

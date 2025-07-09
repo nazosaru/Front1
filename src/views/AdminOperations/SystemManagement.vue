@@ -1,5 +1,6 @@
 <template>
   <Snowfall />
+  <Snowfall />
   <Dashboard>
     <template #left-content>
       <div class="visualization-page">
@@ -36,7 +37,9 @@
 </template>
 
 
+
 <script setup>
+import Snowfall from '@/components/Snowfall.vue';
 import Snowfall from '@/components/Snowfall.vue';
 import Dashboard from '@/components/DashboardAdmin.vue';
 import { ref, onMounted } from 'vue'
@@ -246,8 +249,17 @@ onMounted(async () => {
 </script>
 
 
+
 <style scoped>
 .main-content h2 {
+  color: #ffffff;
+  /* 设置为白色 */
+  font-size: 26px;
+  /* 字体大小可根据需要调整 */
+  font-weight: 600;
+  /* 加粗，可选 */
+  margin-bottom: 20px;
+  /* 与下方表格保持距离 */
   color: #ffffff;
   /* 设置为白色 */
   font-size: 26px;

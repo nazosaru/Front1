@@ -35,4 +35,6 @@ export const API_ENDPOINTS = {
   search_type: `${API_BASE_URL}/stats/search_type`, /* 获取搜索类型分布数据 */
   search_trend: `${API_BASE_URL}/search_trend`, /* 获取搜索趋势数据 */
 
+  wordcloud: `${API_BASE_URL}/wordcloud`,   /* 获取词云数据 */
+
 };
