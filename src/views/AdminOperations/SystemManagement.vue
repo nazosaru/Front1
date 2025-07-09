@@ -6,18 +6,6 @@
         <h2 class="title">System Data Visualization</h2>
 
         <div class="grid-container">
-          <!-- 中文词云 -->
-          <div class="card">
-            <h3 class="chart-title">Chinese Word Cloud</h3>
-            <div ref="zhRef" class="chart-container"></div>
-          </div>
-
-          <!-- 英文词云 -->
-          <div class="card">
-            <h3 class="chart-title">English Word Cloud</h3>
-            <div ref="enRef" class="chart-container"></div>
-          </div>
-
           <!-- 饼图 -->
           <div class="card">
             <h3 class="chart-title">Pie Chart of Search Type</h3>
@@ -28,6 +16,18 @@
           <div class="card">
             <h3 class="chart-title">Search Trend Over Time</h3>
             <div ref="trendRef" class="chart-container"></div>
+          </div>
+          
+          <!-- 中文词云 -->
+          <div class="card">
+            <h3 class="chart-title">Chinese Word Cloud</h3>
+            <div ref="zhRef" class="chart-container"></div>
+          </div>
+
+          <!-- 英文词云 -->
+          <div class="card">
+            <h3 class="chart-title">English Word Cloud</h3>
+            <div ref="enRef" class="chart-container"></div>
           </div>
         </div>
       </div>
@@ -115,6 +115,7 @@ const drawSearchTypePie = async () => {
         },
         legend: {
           orient: "vertical",
+          top: -5,
           left: "left",
           textStyle: {
             color: "#fff"
@@ -125,6 +126,7 @@ const drawSearchTypePie = async () => {
             name: "搜索类型",
             type: "pie",
             radius: "70%",
+            center: ["50%", "55%"],
             data: data,
             emphasis: {
               itemStyle: {
@@ -307,11 +309,5 @@ onMounted(async () => {
   height: 400px;
   margin-top: 10px;
   border-radius: 8px;
-}
-
-/* ✅ 饼图的容器往下挪一点 */
-.card:nth-child(3) .chart-container {
-  margin-top: 40px;
-  /* 可调整为 30px、50px 等 */
 }
 </style>
