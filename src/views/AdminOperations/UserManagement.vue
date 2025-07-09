@@ -477,10 +477,15 @@ body {
 }
 
 .pagination {
-  margin-top: 20px;
+  position: fixed;  /* 使用固定定位 */
+  bottom: 20px;     /* 距离底部的距离 */
+  left: 50%;        /* 居中对齐 */
+  transform: translateX(-50%); /* 使其居中对齐 */
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 90%;       /* 限制宽度 */
+  max-width: 500px; /* 最大宽度 */
 }
 
 .pagination button {
