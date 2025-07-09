@@ -18,16 +18,16 @@
             <div ref="enRef" class="chart-container"></div>
           </div>
 
-          <!-- 柱状图 -->
+          <!-- 饼图 -->
           <div class="card">
-            <h3 class="chart-title">Bar Chart</h3>
-            <img src="@/assets/bg1.png" alt="Bar Chart" class="chart-img" />
+            <h3 class="chart-title">Pie Chart</h3>
+            <div ref="typePieRef" class="chart-container"></div>
           </div>
 
-          <!-- 饼图 -->
-          <div class="card full-width">
-            <h3 class="chart-title">Pie Chart</h3>
-            <img src="@/assets/bg1.png" alt="Pie Chart" class="chart-img" />
+          <!-- 折线图 -->
+          <div class="card">
+            <h3 class="chart-title">Search Trend Over Time</h3>
+            <div ref="trendRef" class="chart-container"></div>
           </div>
         </div>
       </div>
@@ -43,9 +43,12 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import * as echarts from 'echarts'
 import 'echarts-wordcloud'
+import { API_ENDPOINTS } from '@/config/apiConfig';
 
 const zhRef = ref(null)
 const enRef = ref(null)
+const typePieRef = ref(null);
+const trendRef = ref(null)
 
 const renderWordCloud = (el, data) => {
   const chart = echarts.getInstanceByDom(el)
@@ -92,9 +95,117 @@ const renderWordCloud = (el, data) => {
   myChart.setOption(option)
 }
 
+const drawSearchTypePie = async () => {
+  try {
+    const res = await axios.get(API_ENDPOINTS.search_type)
+    const { code, data } = res.data
+    if (code === 0 && data) {
+      const chart = echarts.init(typePieRef.value);
+      chart.setOption({
+        color: [
+          '#213448',
+          '#547792',
+          '#ECEFCA',
+          '#adb8b1',
+          '#7c97a2',
+          '#E0E0E0'
+        ],
+        tooltip: {
+          trigger: "item"
+        },
+        legend: {
+          orient: "vertical",
+          left: "left",
+          textStyle: {
+            color: "#fff"
+          }
+        },
+        series: [
+          {
+            name: "搜索类型",
+            type: "pie",
+            radius: "70%",
+            data: data,
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)"
+              }
+            },
+            label: {
+              color: "#fff"
+            }
+          }
+        ]
+      });
+    } else {
+      console.error("❌ 搜索类型分布后端错误：", res.data.message || "未知错误");
+    }
+  } catch (error) {
+    console.error("❌ 加载搜索类型分布失败：", error);
+  }
+};
+
+const drawSearchTrendLine = async () => {
+  try {
+    const res = await axios.get(API_ENDPOINTS.search_trend)
+    const { code, data } = res.data
+    if (code === 0 && data) {
+      const xData = data.map(item => item.time)
+      const yData = data.map(item => item.count)
+
+      const chart = echarts.getInstanceByDom(trendRef.value)
+      if (chart) chart.dispose()
+
+      const myChart = echarts.init(trendRef.value)
+      myChart.setOption({
+        title: {
+          text: 'Search Trend Over Time',
+          left: 'center',
+          textStyle: { color: '#fff', fontSize: 16 }
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          type: 'category',
+          data: xData,
+          axisLabel: { color: '#fff' }
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: { color: '#fff' }
+        },
+        series: [
+          {
+            name: 'Search Count',
+            type: 'line',
+            smooth: true,
+            areaStyle: {}, // 开启面积图
+            lineStyle: { width: 3 },
+            data: yData
+          }
+        ],
+        grid: {
+          left: '5%',
+          right: '5%',
+          bottom: '10%',
+          containLabel: true
+        }
+      })
+    } else {
+      console.error("❌ 搜索趋势后端错误：", res.data.message || "未知错误")
+    }
+  } catch (error) {
+    console.error("❌ 加载搜索趋势失败：", error)
+  }
+}
+
+
 onMounted(async () => {
   try {
-    const res = await axios.get('api/wordcloud')  // 👈 与 Flask 保持一致
+    const res = await axios.get(API_ENDPOINTS.wordcloud)
     const { code, data } = res.data
     if (code === 0 && data) {
       const { chinese, english } = res.data.data
@@ -110,6 +221,9 @@ onMounted(async () => {
       } else {
         console.warn("⚠️ 英文词云为空，跳过渲染")
       }
+
+      drawSearchTypePie(); // 绘制搜索类型分布饼图
+      drawSearchTrendLine() // 绘制搜索趋势折线图
 
     } else {
       console.error("❌ 后端返回错误：", res.data.message || "未知错误")
