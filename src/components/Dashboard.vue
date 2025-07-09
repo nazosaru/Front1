@@ -106,7 +106,6 @@ import { useRoute, useRouter } from "vue-router";
 import {ref, computed, onMounted, defineEmits} from "vue";
 import { getUsername, clearUsername } from "../utils/Auth";
 import Edit from "../components/Edit.vue";
-import PersonContent from "../components/PersonContent.vue";
 import FeedBack from "../components/FeedBack.vue";
 import Pay from "../components/Pay.vue";
 import Delete from "../components/Delete.vue";

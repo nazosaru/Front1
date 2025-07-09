@@ -8,20 +8,12 @@
             <!-- 历史记录标题区域 -->
             <div class="history-header">
               <h2>Search History</h2>
-              <div class="history-actions">
-                <button class="action-button" @click="refreshHistory">Refresh</button>
-                <button class="action-button" @click="clearAllHistory">Clear All</button>
-              </div>
             </div>
 
             <!-- 历史记录列表 -->
             <div class="history-list-container">
-              <div
-                  class="history-item"
-                  v-for="(item, index) in history"
-                  :key="item.id"
-                  @click="viewHistoryDetail(item)"
-              >
+              <div class="history-item" v-for="(item, index) in history" :key="item.id"
+                   @click="viewHistoryDetail(item)">
                 <div class="history-item-content">
                   <img :src="item.imageUrl" alt="History Image" class="history-thumbnail" />
                   <div class="history-info">
@@ -31,7 +23,6 @@
                 </div>
                 <div class="history-item-actions">
                   <button class="item-button" @click.stop="copyResult(item)">Copy</button>
-                  <button class="item-button delete-btn" @click.stop="removeHistory(index)">Delete</button>
                 </div>
               </div>
 
@@ -66,19 +57,19 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed} from "vue";
-import {useRouter} from "vue-router";
+import { ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
 import Snowfall from "../components/Snowfall.vue";
-import {getUsername} from "../utils/Auth";
+import { getUsername } from "../utils/Auth";
 import dashboard from "../components/Dashboard.vue";
-import {API_ENDPOINTS} from "../config/apiConfig";
+import { API_ENDPOINTS } from "../config/apiConfig";
 
 const router = useRouter();
 
 // 主题相关
 const currentTheme = ref("Snowfall");
 const currentThemeComponent = computed(() => {
-      return Snowfall;
+  return Snowfall;
 });
 
 // 历史记录数据
@@ -94,7 +85,7 @@ const currentDetail = ref({
 
 // API配置
 const api = {
-  fetchHistory: API_ENDPOINTS.list,
+  fetchHistory: API_ENDPOINTS.listAll,
   deleteHistory: API_ENDPOINTS.deleteHistory
 };
 
@@ -117,26 +108,27 @@ const loadHistory = async () => {
   try {
     isLoading.value = true;
     const token = localStorage.getItem("jwtToken");
+    const userId = localStorage.getItem("user_id");
+
+    const formData = new FormData();
+    formData.append("user_id", userId);
 
     const response = await fetch(api.fetchHistory, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({
-        username: getUsername()
-      })
+      body: formData
     });
 
     const result = await response.json();
 
     if (result.code === 0 && result.data) {
-      history.value = result.data.map(item => ({
-        id: item.search_history_id,
-        imageUrl: item.image_url || "",
+      history.value = result.data.map((item, idx) => ({
+        id: idx,
+        imageUrl: item.images?.[0] ? 'data:image/jpeg;base64,' + item.images[0] : "",
         text: item.search_text || "",
-        time: item.created_at || new Date().toISOString()
+        time: item.date || new Date().toISOString()
       }));
     } else {
       console.error("Failed to load history:", result.message);
@@ -147,6 +139,7 @@ const loadHistory = async () => {
     isLoading.value = false;
   }
 };
+
 
 // 刷新历史记录
 const refreshHistory = () => {
@@ -216,7 +209,7 @@ const removeHistory = async (index) => {
 
 // 查看历史记录详情
 const viewHistoryDetail = (item) => {
-  currentDetail.value = {...item};
+  currentDetail.value = { ...item };
   showDetailModal.value = true;
 };
 
@@ -286,31 +279,13 @@ const formatTime = (timeString) => {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+
 .history-header h2 {
   font-size: 1.5rem;
   color: #353535;
   margin: 0;
 }
 
-.history-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.action-button {
-  background-color: rgba(46,49,64);
-  color: #ccc;
-  border: 1px solid rgba(84, 83, 83, 0.5);
-  border-radius: 5px;
-  padding: 8px 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: "Consolas", monospace;
-}
-
-.action-button:hover {
-  background-color: #434653;
-}
 
 .history-list-container {
   flex: 1;
@@ -319,7 +294,9 @@ const formatTime = (timeString) => {
 }
 
 .history-item {
-  background-color: rgba(46, 49, 64, 0.5);
+  background-color: rgba(240, 240, 255, 0.2);
+  /* 原本是 rgba(46, 49, 64, 0.5) */
+  border: 1px solid rgba(180, 180, 200, 0.4);
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 10px;
@@ -331,7 +308,8 @@ const formatTime = (timeString) => {
 }
 
 .history-item:hover {
-  background-color: rgba(46, 49, 64, 0.7);
+  background-color: rgba(230, 230, 250, 0.4);
+  /* 原来更深，这里改成更亮的悬停色 */
 }
 
 .history-item-content {
@@ -378,6 +356,7 @@ const formatTime = (timeString) => {
   border: 1px solid rgba(84, 83, 83, 0.5);
   border-radius: 5px;
   padding: 5px 10px;
+  margin-right: 20px;
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.3s ease;
@@ -399,7 +378,7 @@ const formatTime = (timeString) => {
 .empty-history {
   text-align: center;
   padding: 40px;
-  color: rgba(25,25,25, 0.5);
+  color: rgba(25, 25, 25, 0.5);
   font-style: italic;
   font-size: 1.3rem;
 }
@@ -411,7 +390,7 @@ const formatTime = (timeString) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -419,9 +398,10 @@ const formatTime = (timeString) => {
 }
 
 .modal-content {
-  background-color: rgba(46, 49, 64, 0.95);
+  background-color: rgba(26, 28, 45, 0.8);
+  color: #e0e0e0;
   border-radius: 10px;
-  width: 80%;
+  width: 60%;
   max-width: 800px;
   max-height: 80vh;
   display: flex;
@@ -439,7 +419,7 @@ const formatTime = (timeString) => {
 
 .modal-header h3 {
   margin: 0;
-  color: #d3d3d3;
+  color: #ffffff;
 }
 
 .close-btn {
@@ -470,11 +450,17 @@ const formatTime = (timeString) => {
 .detail-text {
   width: 100%;
   padding: 15px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: #2e2e3f;
+  color: #e6e6e6;
   border-radius: 5px;
   margin-bottom: 15px;
   white-space: pre-wrap;
   font-family: "Consolas", monospace;
+}
+
+.modal-header,
+.modal-footer {
+  background-color: transparent;
 }
 
 .detail-time {

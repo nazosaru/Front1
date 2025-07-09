@@ -194,7 +194,7 @@ const resetForm = () => {
 }
 
 .edit-content {
-  background-color: rgba(26, 28, 45, 0.35);
+  background-color: rgba(26, 28, 45, 0.8);
   border-radius: 20px;
   width: 400px;
   padding: 20px 30px;
