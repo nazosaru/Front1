@@ -20,7 +20,7 @@
 
           <!-- 饼图 -->
           <div class="card">
-            <h3 class="chart-title">Pie Chart</h3>
+            <h3 class="chart-title">Pie Chart of Search Type</h3>
             <div ref="typePieRef" class="chart-container"></div>
           </div>
 
@@ -160,30 +160,40 @@ const drawSearchTrendLine = async () => {
 
       const myChart = echarts.init(trendRef.value)
       myChart.setOption({
-        title: {
-          text: 'Search Trend Over Time',
-          left: 'center',
-          textStyle: { color: '#fff', fontSize: 16 }
-        },
         tooltip: {
           trigger: 'axis'
         },
         xAxis: {
           type: 'category',
           data: xData,
-          axisLabel: { color: '#fff' }
+          axisLabel: { color: '#fff' },
+          axisLine: { lineStyle: { color: '#999' } }
         },
         yAxis: {
           type: 'value',
-          axisLabel: { color: '#fff' }
+          axisLabel: { color: '#fff' },
+          axisLine: { lineStyle: { color: '#999' } },
+          splitLine: { lineStyle: { color: '#444' } }
         },
         series: [
           {
             name: 'Search Count',
             type: 'line',
             smooth: true,
-            areaStyle: {}, // 开启面积图
-            lineStyle: { width: 3 },
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: {
+              color: '#2f4f6b',
+              width: 3
+            },
+            itemStyle: {
+              color: '#547792',
+              borderColor: '#fff',
+              borderWidth: 1
+            },
+            areaStyle: {
+              color: 'rgba(84, 119, 146, 0.25)' // 547792 的 rgba 版本
+            },
             data: yData
           }
         ],
@@ -297,5 +307,10 @@ onMounted(async () => {
   height: 400px;
   margin-top: 10px;
   border-radius: 8px;
+}
+
+/* ✅ 饼图的容器往下挪一点 */
+.card:nth-child(3) .chart-container {
+  margin-top: 40px; /* 可调整为 30px、50px 等 */
 }
 </style>
