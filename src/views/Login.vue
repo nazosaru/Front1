@@ -30,9 +30,6 @@
           </el-form-item>
 
           <el-form-item>
-            <div class="rememberme-panel">
-              <el-checkbox v-model="formData.rememberMe">Remember me</el-checkbox>
-            </div>
             <div class="no-account">
               <a href="javascript:void(0)" class="a-link" @click="showPanel(2)">Forgot your password?</a>
               <a href="javascript:void(0)" class="a-link" @click="showPanel(0)">No account?</a>
@@ -176,7 +173,6 @@ const checkRePassword = (rule, value, callback) => {
 const formData = ref({
   username: "",
   password: "",
-  rememberMe: false,
 });
 const formDataRef = ref();
 
@@ -219,9 +215,7 @@ const resetForm = () => {
 
     if (opType.value == 1) {
       const cookieLoginInfo = proxy.VueCookies.get("loginInfo");
-      if (cookieLoginInfo) {
-        formData.value = cookieLoginInfo;
-      }
+
     }
   });
 };
@@ -266,6 +260,9 @@ const DEV_ADMIN_CREDENTIALS = {
 
 
 const handleRegisterOrLogin = async (params) => {
+  // 保存原始密码用于remember me功能
+  const rawPassword = params.password;
+  
   // 开发模式下管理员快捷登录
   if (isDevMode &&
       params.username === DEV_ADMIN_CREDENTIALS.username &&
@@ -312,7 +309,6 @@ const handleRegisterOrLogin = async (params) => {
 
   if (opType.value === 1) {
     url = api.login;
-    let cookieLoginInfo = proxy.VueCookies.get("loginInfo");
   }
 
   // 使用 URLSearchParams 来格式化参数，确保后端可以用 request.form 接收
@@ -342,9 +338,7 @@ const handleRegisterOrLogin = async (params) => {
   }
 
   // 处理记住登录信息
-  if (opType.value === 1) {
-    handleRememberLogin(params);
-  }
+
 };
 
 // 处理成功响应
@@ -376,19 +370,7 @@ const handleSuccessResponse = (response, params) => {
   }
 };
 
-// 处理记住登录信息
-const handleRememberLogin = (params) => {
-  if (params.rememberMe) {
-    const loginInfo = {
-      username: params.username,
-      password: params.password,
-      rememberMe: params.rememberMe,
-    };
-    proxy.VueCookies.set("loginInfo", loginInfo, "7d");
-  } else {
-    proxy.VueCookies.remove("loginInfo");
-  }
-};
+
 
 // 重置密码流程相关状态
 const codeSent = ref(false);     // 是否已发送验证码

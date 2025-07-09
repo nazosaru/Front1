@@ -27,36 +27,36 @@
           <!-- 用户表格 -->
           <table class="user-table">
             <thead>
-            <tr>
-              <th>User Name</th>
-              <th>Email</th>
-              <th>User Role</th>
-              <th>Operation</th>
-            </tr>
+              <tr>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>User Role</th>
+                <th>Operation</th>
+              </tr>
             </thead>
             <tbody>
-            <tr v-for="(user, index) in users" :key="index">
-              <td>{{ user.username }}</td>
-              <td>{{ user.email }}</td>
-              <td v-if="editingIndex === index">
-                <select v-model="editUserData.permission_level">
-                  <option :value="1">user</option>
-                  <option :value="0">admin</option>
-                </select>
-              </td>
-              <td v-else>{{ user.permission_level === 1 ? 'user' : 'admin' }}</td>
-              <td>
-                <button v-if="editingIndex === index" @click="saveUser(index)">Store</button>
-                <button v-else @click="editUser(index)">Edit</button>
-                <button class="delete-btn" v-if="editingIndex !== index" @click="deleteUser(index)">Delete</button>
-                <button v-if="editingIndex === index" @click="cancelEdit(index)">Cancel</button>
-              </td>
-            </tr>
-            <tr v-if="users.length === 0">
-              <td colspan="4" style="text-align: center; padding: 20px;">
-                No matching users found.
-              </td>
-            </tr>
+              <tr v-for="(user, index) in users" :key="index">
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td v-if="editingIndex === index">
+                  <select v-model="editUserData.permission_level">
+                    <option :value="1">user</option>
+                    <option :value="0">admin</option>
+                  </select>
+                </td>
+                <td v-else>{{ user.permission_level === 1 ? 'user' : 'admin' }}</td>
+                <td>
+                  <button v-if="editingIndex === index" @click="saveUser(index)">Store</button>
+                  <button v-else @click="editUser(index)">Edit</button>
+                  <button class="delete-btn" v-if="editingIndex !== index" @click="deleteUser(index)">Delete</button>
+                  <button v-if="editingIndex === index" @click="cancelEdit(index)">Cancel</button>
+                </td>
+              </tr>
+              <tr v-if="users.length === 0">
+                <td colspan="4" style="text-align: center; padding: 20px;">
+                  No matching users found.
+                </td>
+              </tr>
             </tbody>
           </table>
 
@@ -74,21 +74,21 @@
 
 
 <script setup>
-import {ref, onMounted} from "vue";
-import {useRouter, useRoute} from "vue-router";
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import Snowfall from "@/components/Snowfall.vue";
-import {getUsername} from "@/utils/Auth";
-import {API_ENDPOINTS} from "../../config/apiConfig";
+import { getUsername } from "@/utils/Auth";
+import { API_ENDPOINTS } from "../../config/apiConfig";
 import Dashboard from "@/components/DashboardAdmin.vue";
 
 const router = useRouter();
 const users = ref([]);
 const editingIndex = ref(null);
-const editUserData = ref({username: "", permission_level: 1});
+const editUserData = ref({ username: "", permission_level: 1 });
 const searchQuery = ref(""); // 搜索条件
 const currentPage = ref(1); // 当前页码
-const pageSize = ref(10); // 每页显示的用户数
+const pageSize = ref(8); // 每页显示的用户数
 const totalPages = ref(1); // 总页数
 const filterAdmin = ref(""); // 筛选管理员的状态
 
@@ -522,7 +522,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 16px; /* 控制间距 */
+  gap: 16px;
+  /* 控制间距 */
   margin-bottom: 5px;
   width: 100%;
   max-width: 500px;
@@ -532,5 +533,4 @@ body {
 .filter-container {
   flex-shrink: 0;
 }
-
 </style>

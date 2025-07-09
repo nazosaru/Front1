@@ -213,6 +213,10 @@ const uploadImageFromList = async (index) => {
     selectedFile.value = new File([blob], `image_${index}.jpg`, {
       type: blob.type,
     });
+    
+    // 保存当前状态用于重试
+    lastSelectedFile.value = selectedFile.value;
+    lastDescription.value = description.value;
 
     if (!selectedFile.value) {
       alert("Please choose an image file！");
@@ -316,7 +320,67 @@ const handleRetry = async (index) => {
     return;
   }
 
-  await sendImage(lastSelectedFile.value, lastDescription.value);
+  try {
+    const currentTime = new Date().toLocaleTimeString();
+    isLoading.value = true;
+
+    // 保留原始消息
+    const originalMessage = messages.value[index - 1];
+    
+    // 更新原始消息显示加载状态
+    if (originalMessage) {
+      originalMessage.loading = true;
+    }
+
+    const formData = new FormData();
+    formData.append("username", getUsername());
+    formData.append("image_file", lastSelectedFile.value);
+
+    if (lastDescription.value) {
+      formData.append("description", lastDescription.value);
+    }
+
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      handleError("Request failed. Please try again later.");
+      isLoading.value = false;
+      return;
+    }
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      handleError(`Request failed, status code：${response.status}`);
+      isLoading.value = false;
+      return;
+    }
+
+    const result = await response.json();
+    const responseTime = new Date().toLocaleTimeString();
+
+    // 更新响应消息而不是添加新消息
+    if (messages.value[index]) {
+      messages.value[index].text = result.caption || "This is the response provided by the system";
+      messages.value[index].time = responseTime;
+      messages.value[index].loading = false;
+    }
+
+    // 恢复原始消息状态
+    if (originalMessage) {
+      originalMessage.loading = false;
+    }
+  } catch (error) {
+    handleError("Request failed, please try again later");
+    console.error("Retry failed", error);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const sendImage = async (fileToSend, descToSend) => {
