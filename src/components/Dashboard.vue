@@ -92,12 +92,6 @@
 
   <!-- 各种对话框组件 -->
   <Edit :isVisible="isEditVisible" @update:isVisible="isEditVisible = $event" />
-  <Answer :isVisible="isAnswerVisible" @update:isVisible="isAnswerVisible = $event" />
-  <FeedBack :isVisible="isFeedBackVisible" @update:isVisible="isFeedBackVisible = $event" />
-  <Pay :isVisible="isPayVisible" @update:isVisible="isPayVisible = $event" />
-  <Personalization :isVisible="isPersonalizationVisible" @update:isVisible="isPersonalizationVisible = $event" />
-  <Delete :isVisible="isDeleteVisible" @update:isVisible="isDeleteVisible = $event" />
-
 
 </template>
 
@@ -106,10 +100,6 @@ import { useRoute, useRouter } from "vue-router";
 import {ref, computed, onMounted, defineEmits} from "vue";
 import { getUsername, clearUsername } from "../utils/Auth";
 import Edit from "../components/Edit.vue";
-import FeedBack from "../components/FeedBack.vue";
-import Pay from "../components/Pay.vue";
-import Delete from "../components/Delete.vue";
-import Answer from "../components/Answer.vue";
 import edit from "@/components/Edit.vue";
 
 
@@ -119,14 +109,8 @@ const route = useRoute();
 const username = getUsername();
 const avatarSrc = ref("public/user.svg"); // 默认头像
 
-// 定义各种对话框的显示状态
-const isForm3Visible = ref(false);  // 编辑面板
+// 定义对话框的显示状态
 const isEditVisible = ref(false);   // 编辑对话框
-const isAnswerVisible = ref(false); // 回答对话框
-const isFeedBackVisible = ref(false); // 反馈对话框
-const isPayVisible = ref(false);    // 支付对话框
-const isDeleteVisible = ref(false); // 删除对话框
-const isPersonalizationVisible = ref(false); // 个性化对话框
 
 
 
