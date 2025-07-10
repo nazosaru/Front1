@@ -1,3 +1,3 @@
-export const SERVER_IP = "192.168.10.239";    // 后端服务器的IP地址
+export const SERVER_IP = "10.242.8.155";    // 后端服务器的IP地址
 export const SERVER_PORT = 8000;
 export const SERVER_URL = `http://${SERVER_IP}:${SERVER_PORT}`;

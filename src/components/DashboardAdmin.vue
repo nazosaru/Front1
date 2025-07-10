@@ -21,7 +21,7 @@
               @click="navigateTo('/systemManagement')">
             <a href="#">
               <i class="fa fa-arrow-trend-up nav-icon"></i>
-              <span class="nav-text">Word Cloud</span>
+              <span class="nav-text">Data Visualize</span>
             </a>
           </li>
         </ul>
